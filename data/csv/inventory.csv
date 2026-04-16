@@ -1,0 +1,51 @@
+product_id,product_name,stock_quantity,reorder_level,reorder_needed,warehouse,last_restocked
+P001,DataSync Pro,436,39,False,Warehouse-C,2024-10-25
+P002,CloudGuard,19,35,True,Warehouse-C,2024-11-05
+P003,AnalyticsSuite,342,11,False,Warehouse-A,2024-10-19
+P004,DevOps Toolkit,92,11,False,Warehouse-C,2024-11-18
+P005,SecureVault,50,28,False,Warehouse-B,2024-12-27
+P006,CodeFlow IDE,373,39,False,Warehouse-B,2024-11-15
+P007,APIGateway Plus,419,32,False,Warehouse-B,2024-11-29
+P008,ML Pipeline,141,38,False,Warehouse-A,2024-11-19
+P009,DocuManager,234,50,False,Warehouse-B,2024-12-10
+P010,FormBuilder,107,45,False,Warehouse-C,2024-10-09
+P011,ServerRack X1,164,35,False,Warehouse-B,2024-12-08
+P012,NetSwitch 5G,432,41,False,Warehouse-A,2024-11-18
+P013,StorageBox 10T,180,49,False,Warehouse-C,2024-12-01
+P014,EdgeNode Mini,162,29,False,Warehouse-A,2024-12-19
+P015,PowerUnit 3K,327,35,False,Warehouse-B,2024-10-12
+P016,SmartSensor Hub,254,50,False,Warehouse-A,2024-11-12
+P017,DisplayPanel 4K,103,26,False,Warehouse-C,2024-10-29
+P018,RouterMesh Pro,179,31,False,Warehouse-B,2024-11-14
+P019,BackupDrive 5T,386,20,False,Warehouse-A,2024-11-19
+P020,CableKit Premium,8,17,True,Warehouse-A,2024-10-17
+P021,Setup & Config,158,42,False,Warehouse-C,2024-10-09
+P022,24/7 Support Plan,286,28,False,Warehouse-C,2024-10-23
+P023,Training Package,91,35,False,Warehouse-C,2024-10-02
+P024,Data Migration,38,22,False,Warehouse-A,2024-12-19
+P025,Security Audit,364,48,False,Warehouse-C,2024-11-09
+P026,Performance Tuning,436,26,False,Warehouse-A,2024-11-17
+P027,Custom Integration,272,32,False,Warehouse-B,2024-12-13
+P028,Architecture Review,471,34,False,Warehouse-A,2024-11-23
+P029,Compliance Check,314,46,False,Warehouse-A,2024-11-19
+P030,Onboarding Program,115,38,False,Warehouse-A,2024-11-29
+P031,Basic Plan,280,19,False,Warehouse-C,2024-11-25
+P032,Pro Plan,13,41,True,Warehouse-A,2024-10-03
+P033,Enterprise Plan,112,25,False,Warehouse-A,2024-11-04
+P034,Team Plan,331,23,False,Warehouse-A,2024-12-29
+P035,Developer Plan,151,25,False,Warehouse-A,2024-10-13
+P036,Analytics Add-on,247,38,False,Warehouse-B,2024-10-20
+P037,Storage Add-on,282,46,False,Warehouse-A,2024-11-08
+P038,Security Add-on,95,43,False,Warehouse-C,2024-11-09
+P039,API Add-on,321,46,False,Warehouse-B,2024-11-27
+P040,Support Add-on,361,33,False,Warehouse-B,2024-11-05
+P041,USB-C Hub,189,33,False,Warehouse-A,2024-11-20
+P042,Laptop Stand,276,32,False,Warehouse-A,2024-10-03
+P043,Wireless Mouse,68,30,False,Warehouse-C,2024-11-29
+P044,Mech Keyboard,407,44,False,Warehouse-C,2024-12-14
+P045,Monitor Arm,49,42,False,Warehouse-C,2024-10-31
+P046,Webcam HD,274,30,False,Warehouse-A,2024-10-14
+P047,Headset Pro,116,32,False,Warehouse-C,2024-10-02
+P048,Docking Station,330,45,False,Warehouse-A,2024-11-01
+P049,Cable Organizer,137,46,False,Warehouse-A,2024-11-02
+P050,Screen Protector,316,38,False,Warehouse-B,2024-10-16

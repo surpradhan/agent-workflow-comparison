@@ -1,0 +1,201 @@
+customer_id,name,email,company,segment,region,industry,signup_date,is_active
+C0001,Arjun Garcia,arjun.garcia1@apex.com,Apex Technologies,Mid-Market,Europe,Healthcare,2023-10-09,True
+C0002,Chloe Clark,chloe.clark2@orbit.com,Orbit Inc,Enterprise,North America,Technology,2024-03-08,True
+C0003,Kai Wilson,kai.wilson3@apex.com,Apex Solutions,Startup,Europe,Retail,2023-07-23,True
+C0004,Nina Scott,nina.scott4@apex.com,Apex Systems,Startup,Asia-Pacific,Finance,2023-06-13,True
+C0005,Leo Kumar,leo.kumar5@summit.com,Summit Inc,Enterprise,Asia-Pacific,Finance,2024-01-25,True
+C0006,Nina Patel,nina.patel6@beacon.com,Beacon Solutions,Startup,North America,Manufacturing,2023-05-08,True
+C0007,Arjun Wilson,arjun.wilson7@zenith.com,Zenith Solutions,Enterprise,North America,Education,2023-07-16,True
+C0008,Sofia Wang,sofia.wang8@horizon.com,Horizon Systems,Startup,Asia-Pacific,Retail,2023-04-14,True
+C0009,Emma Kim,emma.kim9@zenith.com,Zenith Ltd,SMB,North America,Manufacturing,2023-08-03,True
+C0010,Zara Clark,zara.clark10@horizon.com,Horizon Corp,Startup,Asia-Pacific,Education,2024-04-18,True
+C0011,Yuki Thomas,yuki.thomas11@meridian.com,Meridian Systems,Mid-Market,North America,Finance,2023-02-27,True
+C0012,Chen Johnson,chen.johnson12@helix.com,Helix Technologies,Mid-Market,Latin America,Retail,2023-11-19,False
+C0013,Arjun Williams,arjun.williams13@quantum.com,Quantum Ltd,Mid-Market,Asia-Pacific,Education,2023-05-23,True
+C0014,Ravi Nguyen,ravi.nguyen14@catalyst.com,Catalyst Ltd,Mid-Market,Latin America,Technology,2023-08-13,True
+C0015,Isla Garcia,isla.garcia15@quantum.com,Quantum Technologies,Startup,North America,Retail,2023-06-13,True
+C0016,Noah Lee,noah.lee16@atlas.com,Atlas Solutions,Enterprise,Asia-Pacific,Education,2023-01-12,True
+C0017,Sofia Chen,sofia.chen17@pinnacle.com,Pinnacle Group,SMB,Europe,Manufacturing,2023-01-04,False
+C0018,Isla Singh,isla.singh18@vanguard.com,Vanguard Systems,Mid-Market,Europe,Finance,2024-06-03,True
+C0019,Zara Sato,zara.sato19@prism.com,Prism Inc,Startup,North America,Technology,2023-11-28,False
+C0020,Ravi Adams,ravi.adams20@vanguard.com,Vanguard Corp,Mid-Market,North America,Technology,2023-03-01,True
+C0021,Sami Wang,sami.wang21@orbit.com,Orbit Systems,Mid-Market,Latin America,Manufacturing,2023-05-09,True
+C0022,Kai Scott,kai.scott22@pulse.com,Pulse Group,Mid-Market,Asia-Pacific,Retail,2023-08-05,False
+C0023,Arjun Anderson,arjun.anderson23@beacon.com,Beacon Solutions,Enterprise,Europe,Healthcare,2024-04-07,True
+C0024,James Nguyen,james.nguyen24@orbit.com,Orbit Corp,Enterprise,North America,Education,2023-08-14,True
+C0025,Yuki Wang,yuki.wang25@nova.com,Nova Systems,Enterprise,Europe,Finance,2023-12-05,True
+C0026,Alex Taylor,alex.taylor26@quantum.com,Quantum Technologies,Mid-Market,Latin America,Retail,2024-04-29,True
+C0027,Priya Thomas,priya.thomas27@forge.com,Forge Ltd,Startup,Latin America,Education,2024-03-09,True
+C0028,Arjun Singh,arjun.singh28@summit.com,Summit Inc,SMB,North America,Healthcare,2024-02-17,True
+C0029,Zara Williams,zara.williams29@quantum.com,Quantum Group,SMB,Latin America,Healthcare,2023-07-07,False
+C0030,Chen Williams,chen.williams30@orbit.com,Orbit Inc,Enterprise,North America,Healthcare,2023-02-21,True
+C0031,Lena Martinez,lena.martinez31@nexus.com,Nexus Systems,Enterprise,Europe,Retail,2024-02-15,True
+C0032,Diego Tanaka,diego.tanaka32@beacon.com,Beacon Ltd,Startup,Europe,Healthcare,2024-03-09,True
+C0033,Maria Nguyen,maria.nguyen33@orbit.com,Orbit Inc,Enterprise,North America,Manufacturing,2023-11-18,True
+C0034,Julia Scott,julia.scott34@prism.com,Prism Corp,Enterprise,Europe,Technology,2023-02-28,True
+C0035,Chloe Scott,chloe.scott35@horizon.com,Horizon Group,Mid-Market,North America,Manufacturing,2023-05-03,True
+C0036,Chloe Nguyen,chloe.nguyen36@helix.com,Helix Solutions,SMB,Europe,Education,2023-11-20,True
+C0037,Yuki Tanaka,yuki.tanaka37@catalyst.com,Catalyst Corp,Startup,Asia-Pacific,Technology,2023-11-04,True
+C0038,Mia Nguyen,mia.nguyen38@summit.com,Summit Inc,SMB,Europe,Finance,2023-08-07,False
+C0039,Ravi Silva,ravi.silva39@zenith.com,Zenith Ltd,Startup,Asia-Pacific,Manufacturing,2023-06-11,False
+C0040,Nina Singh,nina.singh40@prism.com,Prism Inc,Enterprise,Europe,Finance,2023-11-03,True
+C0041,Priya Clark,priya.clark41@orbit.com,Orbit Corp,SMB,Europe,Education,2023-10-06,True
+C0042,Chloe Singh,chloe.singh42@atlas.com,Atlas Solutions,SMB,North America,Technology,2024-05-15,True
+C0043,Sami Tanaka,sami.tanaka43@nova.com,Nova Inc,Mid-Market,Asia-Pacific,Healthcare,2023-12-08,True
+C0044,Zara Robinson,zara.robinson44@forge.com,Forge Solutions,Enterprise,North America,Education,2023-01-10,False
+C0045,Zara Patel,zara.patel45@zenith.com,Zenith Solutions,Startup,Europe,Technology,2023-06-01,True
+C0046,Ravi Hall,ravi.hall46@nova.com,Nova Ltd,Mid-Market,North America,Finance,2023-08-04,True
+C0047,Ravi Scott,ravi.scott47@forge.com,Forge Solutions,Mid-Market,Europe,Healthcare,2023-06-08,False
+C0048,James Kim,james.kim48@meridian.com,Meridian Systems,Mid-Market,Asia-Pacific,Healthcare,2024-02-26,True
+C0049,Priya Lopez,priya.lopez49@nova.com,Nova Systems,Mid-Market,Europe,Retail,2024-04-26,True
+C0050,Sami White,sami.white50@horizon.com,Horizon Corp,Mid-Market,Latin America,Finance,2023-01-25,True
+C0051,Chen Sato,chen.sato51@atlas.com,Atlas Ltd,Startup,Asia-Pacific,Technology,2024-06-05,True
+C0052,Omar Kim,omar.kim52@helix.com,Helix Ltd,Enterprise,Latin America,Finance,2023-02-09,True
+C0053,Raj Chen,raj.chen53@pulse.com,Pulse Solutions,Startup,Europe,Finance,2023-04-29,True
+C0054,Aisha Smith,aisha.smith54@prism.com,Prism Systems,SMB,Latin America,Technology,2023-07-21,False
+C0055,Julia Kumar,julia.kumar55@pulse.com,Pulse Ltd,SMB,Asia-Pacific,Education,2023-05-08,True
+C0056,Diego Robinson,diego.robinson56@vanguard.com,Vanguard Solutions,Mid-Market,Latin America,Education,2023-05-11,False
+C0057,Chloe Clark,chloe.clark57@pinnacle.com,Pinnacle Solutions,Startup,North America,Finance,2023-11-05,True
+C0058,Aisha White,aisha.white58@helix.com,Helix Solutions,Startup,Latin America,Retail,2023-11-26,True
+C0059,Kai Martinez,kai.martinez59@pinnacle.com,Pinnacle Technologies,SMB,Asia-Pacific,Technology,2023-03-28,True
+C0060,Leo Silva,leo.silva60@vanguard.com,Vanguard Corp,Mid-Market,North America,Technology,2023-07-23,True
+C0061,Lena Wilson,lena.wilson61@vertex.com,Vertex Group,Mid-Market,Latin America,Retail,2024-02-29,True
+C0062,Lucas Singh,lucas.singh62@apex.com,Apex Systems,Startup,Europe,Healthcare,2023-04-20,True
+C0063,Mateo Lee,mateo.lee63@beacon.com,Beacon Inc,Enterprise,Latin America,Healthcare,2023-09-13,True
+C0064,Chloe Lee,chloe.lee64@orbit.com,Orbit Solutions,Startup,Latin America,Manufacturing,2023-11-21,True
+C0065,Fatima Clark,fatima.clark65@mosaic.com,Mosaic Group,Mid-Market,Asia-Pacific,Manufacturing,2023-09-23,True
+C0066,Yuki Tanaka,yuki.tanaka66@beacon.com,Beacon Inc,Mid-Market,Asia-Pacific,Finance,2023-10-20,True
+C0067,Zara Wang,zara.wang67@quantum.com,Quantum Corp,Startup,Europe,Education,2023-08-25,True
+C0068,Aisha Chen,aisha.chen68@meridian.com,Meridian Solutions,Startup,North America,Healthcare,2024-04-22,True
+C0069,Diego Rivera,diego.rivera69@helix.com,Helix Technologies,Startup,Latin America,Technology,2023-01-21,False
+C0070,Sofia Sato,sofia.sato70@catalyst.com,Catalyst Systems,Mid-Market,Latin America,Healthcare,2024-03-05,True
+C0071,Lena Smith,lena.smith71@catalyst.com,Catalyst Ltd,Mid-Market,Latin America,Healthcare,2024-02-19,False
+C0072,Zara Smith,zara.smith72@catalyst.com,Catalyst Solutions,Enterprise,Latin America,Healthcare,2023-01-28,False
+C0073,Fatima Patel,fatima.patel73@atlas.com,Atlas Group,Mid-Market,Latin America,Finance,2023-12-02,True
+C0074,Ravi Lopez,ravi.lopez74@atlas.com,Atlas Systems,SMB,North America,Retail,2024-03-07,True
+C0075,Zara Patel,zara.patel75@zenith.com,Zenith Corp,Enterprise,North America,Healthcare,2023-03-12,True
+C0076,James Wilson,james.wilson76@quantum.com,Quantum Corp,Startup,North America,Manufacturing,2023-05-10,False
+C0077,Noah Robinson,noah.robinson77@atlas.com,Atlas Systems,Mid-Market,North America,Healthcare,2024-01-13,False
+C0078,Priya Nguyen,priya.nguyen78@apex.com,Apex Ltd,Startup,Europe,Technology,2024-01-20,True
+C0079,Sami Singh,sami.singh79@horizon.com,Horizon Inc,Enterprise,North America,Finance,2023-11-05,True
+C0080,Chloe Anderson,chloe.anderson80@vertex.com,Vertex Solutions,Enterprise,Latin America,Retail,2023-12-16,True
+C0081,Emma Singh,emma.singh81@beacon.com,Beacon Technologies,Startup,Europe,Education,2023-06-06,True
+C0082,Arjun Tanaka,arjun.tanaka82@pulse.com,Pulse Systems,Startup,Latin America,Education,2024-05-10,True
+C0083,Raj Scott,raj.scott83@horizon.com,Horizon Systems,SMB,Latin America,Healthcare,2023-03-30,True
+C0084,Ethan Wilson,ethan.wilson84@catalyst.com,Catalyst Ltd,Startup,Asia-Pacific,Healthcare,2023-01-30,True
+C0085,Emma White,emma.white85@atlas.com,Atlas Ltd,SMB,North America,Manufacturing,2023-10-14,False
+C0086,Chen Silva,chen.silva86@forge.com,Forge Group,Startup,Latin America,Retail,2023-09-04,True
+C0087,Chen Brown,chen.brown87@horizon.com,Horizon Group,SMB,Asia-Pacific,Retail,2023-09-07,True
+C0088,Emma Chen,emma.chen88@orbit.com,Orbit Ltd,Startup,Asia-Pacific,Finance,2023-12-27,True
+C0089,Priya Clark,priya.clark89@nexus.com,Nexus Ltd,Mid-Market,Europe,Healthcare,2023-05-03,True
+C0090,Omar Clark,omar.clark90@helix.com,Helix Systems,SMB,North America,Healthcare,2024-06-21,True
+C0091,Emma Kim,emma.kim91@vanguard.com,Vanguard Inc,SMB,North America,Technology,2023-05-10,True
+C0092,Mateo Mueller,mateo.mueller92@mosaic.com,Mosaic Inc,SMB,Latin America,Retail,2023-01-13,True
+C0093,Fatima Patel,fatima.patel93@atlas.com,Atlas Systems,Enterprise,North America,Retail,2024-05-04,True
+C0094,Ethan Singh,ethan.singh94@nova.com,Nova Corp,SMB,North America,Healthcare,2023-06-02,True
+C0095,Leo Chen,leo.chen95@pulse.com,Pulse Solutions,Startup,Latin America,Retail,2023-08-20,True
+C0096,Ethan Chen,ethan.chen96@vanguard.com,Vanguard Solutions,Enterprise,Europe,Education,2023-03-03,True
+C0097,Chloe Wang,chloe.wang97@pinnacle.com,Pinnacle Corp,Enterprise,Europe,Technology,2023-06-27,True
+C0098,Mateo Wilson,mateo.wilson98@mosaic.com,Mosaic Ltd,Mid-Market,Asia-Pacific,Education,2023-02-03,True
+C0099,Isla Williams,isla.williams99@vertex.com,Vertex Technologies,SMB,Europe,Retail,2023-08-28,True
+C0100,Yuki Singh,yuki.singh100@quantum.com,Quantum Ltd,Enterprise,North America,Healthcare,2023-05-26,True
+C0101,Mia Clark,mia.clark101@helix.com,Helix Ltd,Enterprise,Latin America,Education,2024-03-25,True
+C0102,Diego Tanaka,diego.tanaka102@prism.com,Prism Solutions,Startup,North America,Manufacturing,2024-05-20,True
+C0103,Aisha Clark,aisha.clark103@meridian.com,Meridian Solutions,Enterprise,North America,Healthcare,2023-09-14,False
+C0104,Sami Scott,sami.scott104@helix.com,Helix Solutions,SMB,North America,Healthcare,2023-01-22,True
+C0105,Arjun Williams,arjun.williams105@atlas.com,Atlas Corp,Startup,North America,Retail,2024-03-22,True
+C0106,Raj Kumar,raj.kumar106@summit.com,Summit Systems,SMB,Latin America,Education,2023-06-14,True
+C0107,Chloe Lopez,chloe.lopez107@orbit.com,Orbit Inc,Enterprise,Asia-Pacific,Finance,2024-04-10,True
+C0108,Leo Lopez,leo.lopez108@prism.com,Prism Systems,Startup,Latin America,Technology,2023-01-02,True
+C0109,Emma Wilson,emma.wilson109@mosaic.com,Mosaic Technologies,Enterprise,Europe,Finance,2024-03-28,True
+C0110,Julia Brown,julia.brown110@beacon.com,Beacon Technologies,Enterprise,North America,Education,2024-05-11,True
+C0111,Yuki Robinson,yuki.robinson111@pinnacle.com,Pinnacle Ltd,Startup,North America,Healthcare,2023-01-15,False
+C0112,Julia Garcia,julia.garcia112@beacon.com,Beacon Inc,Startup,Asia-Pacific,Manufacturing,2023-06-07,True
+C0113,Aisha Adams,aisha.adams113@mosaic.com,Mosaic Group,Startup,Europe,Retail,2023-09-07,True
+C0114,Mia Lee,mia.lee114@quantum.com,Quantum Systems,SMB,Latin America,Finance,2023-03-13,False
+C0115,Kai Tanaka,kai.tanaka115@apex.com,Apex Ltd,Startup,Europe,Retail,2023-11-02,True
+C0116,Emma Kumar,emma.kumar116@orbit.com,Orbit Systems,Startup,Asia-Pacific,Healthcare,2024-01-22,False
+C0117,Yuki Nguyen,yuki.nguyen117@catalyst.com,Catalyst Corp,Enterprise,Asia-Pacific,Education,2024-02-25,True
+C0118,Julia White,julia.white118@catalyst.com,Catalyst Group,Startup,North America,Healthcare,2023-06-05,True
+C0119,Ethan Kumar,ethan.kumar119@summit.com,Summit Systems,Enterprise,Latin America,Technology,2024-03-26,True
+C0120,Aisha Scott,aisha.scott120@quantum.com,Quantum Inc,SMB,Asia-Pacific,Manufacturing,2024-04-25,True
+C0121,Arjun Wang,arjun.wang121@meridian.com,Meridian Systems,SMB,Latin America,Manufacturing,2024-01-25,True
+C0122,Chen Silva,chen.silva122@vanguard.com,Vanguard Corp,Startup,North America,Education,2023-04-03,True
+C0123,Priya Williams,priya.williams123@pinnacle.com,Pinnacle Technologies,Enterprise,North America,Finance,2023-11-03,True
+C0124,Sofia Anderson,sofia.anderson124@zenith.com,Zenith Group,Mid-Market,Latin America,Manufacturing,2023-05-30,True
+C0125,Fatima Kim,fatima.kim125@pinnacle.com,Pinnacle Inc,Mid-Market,Latin America,Manufacturing,2024-01-27,True
+C0126,Noah Singh,noah.singh126@atlas.com,Atlas Group,Enterprise,Latin America,Finance,2023-09-19,True
+C0127,Fatima Wang,fatima.wang127@beacon.com,Beacon Ltd,Startup,Asia-Pacific,Retail,2023-11-03,True
+C0128,Alex Lopez,alex.lopez128@mosaic.com,Mosaic Inc,Startup,Asia-Pacific,Manufacturing,2023-08-31,True
+C0129,Mateo Brown,mateo.brown129@apex.com,Apex Systems,SMB,North America,Manufacturing,2024-02-10,False
+C0130,Leo Clark,leo.clark130@nova.com,Nova Solutions,SMB,Europe,Manufacturing,2024-05-23,True
+C0131,Yuki Singh,yuki.singh131@nexus.com,Nexus Solutions,Mid-Market,North America,Education,2023-09-14,True
+C0132,Sofia White,sofia.white132@beacon.com,Beacon Inc,Mid-Market,North America,Finance,2024-01-09,True
+C0133,Aisha Kim,aisha.kim133@nexus.com,Nexus Corp,SMB,Europe,Finance,2024-01-10,False
+C0134,Lena White,lena.white134@vanguard.com,Vanguard Technologies,Enterprise,Latin America,Technology,2023-12-13,True
+C0135,Yuki Scott,yuki.scott135@catalyst.com,Catalyst Systems,Enterprise,Latin America,Technology,2024-01-10,True
+C0136,Priya Williams,priya.williams136@zenith.com,Zenith Technologies,Startup,Asia-Pacific,Technology,2023-09-26,True
+C0137,Lena Smith,lena.smith137@pulse.com,Pulse Solutions,Mid-Market,North America,Education,2023-12-02,True
+C0138,Julia Robinson,julia.robinson138@vanguard.com,Vanguard Technologies,Enterprise,Europe,Technology,2024-02-23,False
+C0139,Sofia Martinez,sofia.martinez139@summit.com,Summit Inc,Mid-Market,Latin America,Retail,2023-08-29,True
+C0140,Hana Robinson,hana.robinson140@orbit.com,Orbit Group,Startup,North America,Retail,2023-06-08,True
+C0141,Omar Patel,omar.patel141@zenith.com,Zenith Corp,Startup,Europe,Finance,2024-03-30,True
+C0142,Chloe Anderson,chloe.anderson142@orbit.com,Orbit Technologies,Enterprise,Latin America,Finance,2024-01-03,True
+C0143,Priya Scott,priya.scott143@beacon.com,Beacon Inc,Enterprise,North America,Finance,2023-08-06,True
+C0144,Lucas White,lucas.white144@helix.com,Helix Corp,Mid-Market,Europe,Healthcare,2023-03-12,True
+C0145,Lucas White,lucas.white145@pulse.com,Pulse Inc,Mid-Market,Europe,Manufacturing,2023-10-11,True
+C0146,Fatima Garcia,fatima.garcia146@apex.com,Apex Corp,SMB,Europe,Manufacturing,2023-01-16,True
+C0147,Fatima Tanaka,fatima.tanaka147@nova.com,Nova Corp,Enterprise,North America,Retail,2024-03-07,True
+C0148,Emma Lee,emma.lee148@helix.com,Helix Inc,Mid-Market,North America,Education,2024-04-07,True
+C0149,Isla Thomas,isla.thomas149@prism.com,Prism Ltd,Enterprise,North America,Retail,2024-04-14,True
+C0150,Aisha Thomas,aisha.thomas150@summit.com,Summit Group,Enterprise,North America,Finance,2024-03-30,True
+C0151,Chen Mueller,chen.mueller151@atlas.com,Atlas Solutions,Startup,Asia-Pacific,Retail,2023-11-29,True
+C0152,Aisha Garcia,aisha.garcia152@summit.com,Summit Systems,Startup,Latin America,Healthcare,2023-08-09,True
+C0153,Sami Williams,sami.williams153@catalyst.com,Catalyst Group,SMB,Latin America,Finance,2023-04-08,True
+C0154,Emma Mueller,emma.mueller154@mosaic.com,Mosaic Inc,Enterprise,North America,Retail,2023-04-04,True
+C0155,Hana Anderson,hana.anderson155@quantum.com,Quantum Solutions,SMB,North America,Retail,2023-03-03,True
+C0156,Chloe Sato,chloe.sato156@forge.com,Forge Systems,SMB,Asia-Pacific,Finance,2023-02-22,True
+C0157,Kai Johnson,kai.johnson157@quantum.com,Quantum Technologies,Mid-Market,North America,Finance,2024-05-08,True
+C0158,Emma Garcia,emma.garcia158@atlas.com,Atlas Solutions,Startup,North America,Manufacturing,2023-08-20,False
+C0159,Sami Robinson,sami.robinson159@atlas.com,Atlas Inc,SMB,Asia-Pacific,Finance,2023-07-04,True
+C0160,Fatima Scott,fatima.scott160@quantum.com,Quantum Solutions,Enterprise,Europe,Education,2024-02-15,True
+C0161,James Wang,james.wang161@prism.com,Prism Corp,Startup,Latin America,Finance,2024-01-21,True
+C0162,Sofia Clark,sofia.clark162@meridian.com,Meridian Systems,Enterprise,Europe,Healthcare,2023-03-28,True
+C0163,Maria Thomas,maria.thomas163@vertex.com,Vertex Ltd,Startup,Latin America,Manufacturing,2024-03-29,True
+C0164,Omar Johnson,omar.johnson164@prism.com,Prism Inc,Startup,North America,Finance,2023-12-20,True
+C0165,Ethan Martinez,ethan.martinez165@prism.com,Prism Technologies,Enterprise,Europe,Retail,2023-11-12,False
+C0166,Maria Smith,maria.smith166@nexus.com,Nexus Ltd,Mid-Market,Asia-Pacific,Finance,2023-08-05,True
+C0167,James Martinez,james.martinez167@forge.com,Forge Corp,Startup,Europe,Manufacturing,2023-05-13,True
+C0168,Chloe White,chloe.white168@zenith.com,Zenith Inc,Enterprise,Latin America,Technology,2024-02-11,True
+C0169,Chen Scott,chen.scott169@meridian.com,Meridian Solutions,Startup,Latin America,Finance,2024-03-15,True
+C0170,James Kumar,james.kumar170@pinnacle.com,Pinnacle Systems,SMB,North America,Retail,2024-04-16,True
+C0171,Yuki Chen,yuki.chen171@helix.com,Helix Group,Enterprise,Latin America,Finance,2024-06-20,True
+C0172,Yuki Kumar,yuki.kumar172@pinnacle.com,Pinnacle Inc,Enterprise,Europe,Finance,2024-06-06,True
+C0173,Sami Singh,sami.singh173@quantum.com,Quantum Corp,Mid-Market,Asia-Pacific,Healthcare,2023-04-16,True
+C0174,Lucas Sato,lucas.sato174@vertex.com,Vertex Corp,Startup,Latin America,Education,2024-05-20,False
+C0175,Ethan Singh,ethan.singh175@pulse.com,Pulse Ltd,Mid-Market,Latin America,Technology,2023-11-20,True
+C0176,Arjun Brown,arjun.brown176@atlas.com,Atlas Solutions,SMB,North America,Finance,2023-02-27,True
+C0177,Maria Patel,maria.patel177@zenith.com,Zenith Systems,Enterprise,North America,Manufacturing,2023-10-21,True
+C0178,Diego Williams,diego.williams178@helix.com,Helix Solutions,Startup,Europe,Finance,2023-02-12,True
+C0179,Kai Mueller,kai.mueller179@nova.com,Nova Group,SMB,North America,Manufacturing,2023-04-16,True
+C0180,Maria Silva,maria.silva180@beacon.com,Beacon Group,Mid-Market,Asia-Pacific,Finance,2024-06-20,False
+C0181,Diego Chen,diego.chen181@meridian.com,Meridian Technologies,SMB,North America,Finance,2023-02-23,True
+C0182,Chloe Lopez,chloe.lopez182@vanguard.com,Vanguard Ltd,SMB,North America,Manufacturing,2023-06-03,True
+C0183,Julia Anderson,julia.anderson183@vanguard.com,Vanguard Technologies,Mid-Market,North America,Finance,2024-02-06,True
+C0184,Arjun White,arjun.white184@meridian.com,Meridian Systems,Enterprise,Latin America,Manufacturing,2023-05-11,True
+C0185,Emma Brown,emma.brown185@pinnacle.com,Pinnacle Corp,Startup,Europe,Healthcare,2023-12-16,False
+C0186,Lucas Wang,lucas.wang186@vanguard.com,Vanguard Systems,Enterprise,Asia-Pacific,Manufacturing,2023-04-14,True
+C0187,Diego Mueller,diego.mueller187@pinnacle.com,Pinnacle Corp,Startup,North America,Retail,2023-06-19,True
+C0188,Hana Silva,hana.silva188@beacon.com,Beacon Solutions,Startup,Europe,Manufacturing,2023-10-19,True
+C0189,Nina White,nina.white189@mosaic.com,Mosaic Systems,SMB,Latin America,Retail,2023-07-18,True
+C0190,Leo Lopez,leo.lopez190@prism.com,Prism Solutions,Mid-Market,Europe,Manufacturing,2024-03-04,True
+C0191,Omar Patel,omar.patel191@mosaic.com,Mosaic Systems,Enterprise,North America,Finance,2024-01-16,True
+C0192,Fatima Tanaka,fatima.tanaka192@beacon.com,Beacon Solutions,Startup,North America,Healthcare,2023-05-31,True
+C0193,Ravi Anderson,ravi.anderson193@apex.com,Apex Group,Startup,Asia-Pacific,Healthcare,2023-02-24,True
+C0194,Chen Anderson,chen.anderson194@horizon.com,Horizon Inc,Enterprise,Asia-Pacific,Healthcare,2023-11-23,True
+C0195,Sofia Hall,sofia.hall195@mosaic.com,Mosaic Technologies,Startup,Latin America,Manufacturing,2023-05-23,True
+C0196,Chen Smith,chen.smith196@atlas.com,Atlas Corp,Startup,North America,Finance,2023-06-03,True
+C0197,Priya Patel,priya.patel197@horizon.com,Horizon Group,Enterprise,North America,Retail,2024-04-13,True
+C0198,James Singh,james.singh198@prism.com,Prism Solutions,Mid-Market,Asia-Pacific,Retail,2023-09-05,True
+C0199,Emma Silva,emma.silva199@helix.com,Helix Group,Enterprise,Asia-Pacific,Technology,2023-07-11,False
+C0200,Zara Lee,zara.lee200@prism.com,Prism Solutions,Startup,Latin America,Technology,2023-01-21,True

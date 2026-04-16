@@ -1,0 +1,51 @@
+product_id,name,category,price,cost,margin_pct,is_active
+P001,DataSync Pro,Software,4905.76,1969.47,59.9,True
+P002,CloudGuard,Software,3948.93,1729.32,56.2,True
+P003,AnalyticsSuite,Software,3152.43,1918.57,39.1,True
+P004,DevOps Toolkit,Software,1682.61,534.62,68.2,True
+P005,SecureVault,Software,4073.13,1507.2,63.0,True
+P006,CodeFlow IDE,Software,2339.17,1352.4,42.2,True
+P007,APIGateway Plus,Software,4063.13,1321.49,67.5,True
+P008,ML Pipeline,Software,2304.66,961.91,58.3,True
+P009,DocuManager,Software,1021.36,323.53,68.3,False
+P010,FormBuilder,Software,2591.45,1802.74,30.4,True
+P011,ServerRack X1,Hardware,1288.96,775.07,39.9,True
+P012,NetSwitch 5G,Hardware,1804.15,1104.75,38.8,True
+P013,StorageBox 10T,Hardware,1679.66,587.53,65.0,True
+P014,EdgeNode Mini,Hardware,4450.74,2658.53,40.3,True
+P015,PowerUnit 3K,Hardware,1951.61,1345.61,31.1,True
+P016,SmartSensor Hub,Hardware,2502.68,1676.11,33.0,True
+P017,DisplayPanel 4K,Hardware,4011.7,2370.24,40.9,True
+P018,RouterMesh Pro,Hardware,3024.18,1902.02,37.1,True
+P019,BackupDrive 5T,Hardware,1626.41,540.01,66.8,True
+P020,CableKit Premium,Hardware,1553.27,840.39,45.9,True
+P021,Setup & Config,Services,3458.12,1523.71,55.9,True
+P022,24/7 Support Plan,Services,4354.07,1920.25,55.9,False
+P023,Training Package,Services,1394.53,965.03,30.8,False
+P024,Data Migration,Services,402.94,223.63,44.5,True
+P025,Security Audit,Services,4011.44,2293.6,42.8,False
+P026,Performance Tuning,Services,739.6,401.62,45.7,True
+P027,Custom Integration,Services,202.94,66.34,67.3,True
+P028,Architecture Review,Services,1850.64,838.6,54.7,True
+P029,Compliance Check,Services,3037.31,1736.2,42.8,False
+P030,Onboarding Program,Services,1878.9,1137.17,39.5,True
+P031,Basic Plan,Subscriptions,2661.41,1222.16,54.1,True
+P032,Pro Plan,Subscriptions,1270.56,438.83,65.5,True
+P033,Enterprise Plan,Subscriptions,2510.24,1141.64,54.5,True
+P034,Team Plan,Subscriptions,1331.02,537.89,59.6,True
+P035,Developer Plan,Subscriptions,4981.92,2063.66,58.6,False
+P036,Analytics Add-on,Subscriptions,2471.25,862.6,65.1,True
+P037,Storage Add-on,Subscriptions,2276.64,1501.38,34.1,True
+P038,Security Add-on,Subscriptions,466.31,267.09,42.7,True
+P039,API Add-on,Subscriptions,1618.34,710.4,56.1,True
+P040,Support Add-on,Subscriptions,2724.58,1788.78,34.3,True
+P041,USB-C Hub,Accessories,3567.68,2393.66,32.9,True
+P042,Laptop Stand,Accessories,3974.66,2001.25,49.6,True
+P043,Wireless Mouse,Accessories,1028.86,365.81,64.4,True
+P044,Mech Keyboard,Accessories,160.62,83.78,47.8,True
+P045,Monitor Arm,Accessories,4024.19,2095.23,47.9,True
+P046,Webcam HD,Accessories,458.48,194.27,57.6,False
+P047,Headset Pro,Accessories,3602.77,1838.42,49.0,True
+P048,Docking Station,Accessories,4121.99,1358.2,67.0,False
+P049,Cable Organizer,Accessories,3222.41,1546.72,52.0,True
+P050,Screen Protector,Accessories,1742.23,1134.51,34.9,True
