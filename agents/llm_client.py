@@ -13,8 +13,8 @@ from config import settings
 log = logging.getLogger(__name__)
 
 # Retry / timeout configuration
-_RETRY_DELAYS = (1.0, 2.0, 4.0)   # seconds between successive retries
-_LLM_TIMEOUT = 60.0                # seconds before a single call is abandoned
+_RETRY_DELAYS = (2.0, 4.0, 8.0)   # seconds between successive retries
+_LLM_TIMEOUT = 180.0               # seconds before a single call is abandoned
 
 # Typed exception classes from provider SDKs — preferred over keyword matching.
 # Guarded by try/except so the module loads even when a provider is not installed.

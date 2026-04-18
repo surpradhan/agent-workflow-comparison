@@ -121,7 +121,7 @@ class OrchestratorWorkersWorkflow(BaseWorkflow):
             reasoning.append("Workers: executing subtasks concurrently")
             tool_calls_total += len(subtasks)
             for st in subtasks:
-                tools_used.append(st.get("tool", st.get("worker", "unknown")))
+                tools_used.append(st.get("tool") or st.get("worker") or "unknown")
 
             worker_results = await asyncio.gather(
                 *[self._run_worker(st) for st in subtasks],

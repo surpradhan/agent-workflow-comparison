@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from tasks.task_registry import Task
 
@@ -18,6 +18,11 @@ class WorkflowResult(BaseModel):
     """
 
     model_config = ConfigDict(frozen=False)
+
+    @field_validator("tools_used", mode="before")
+    @classmethod
+    def _drop_none_tools(cls, v: list) -> list:
+        return [t for t in (v or []) if t is not None]
 
     task_id: str
     workflow_name: str
