@@ -149,15 +149,11 @@ class ChainWorkflow(BaseWorkflow):
             total_tokens += tokens
             retries += self._llm.last_retries
 
-            # Fix 3: success=False when tools were called but every one failed
-            success = tool_calls_total == 0 or tool_calls_successful > 0
-
             latency_ms = (time.perf_counter() - start) * 1000
             return WorkflowResult(
                 task_id=task.id,
                 workflow_name=self.name,
                 answer=answer,
-                success=success,
                 reasoning_steps=reasoning,
                 tools_used=list(dict.fromkeys(tools_used)),
                 tool_calls_total=tool_calls_total,

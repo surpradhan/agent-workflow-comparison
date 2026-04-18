@@ -202,14 +202,11 @@ class EvaluatorOptimizerWorkflow(BaseWorkflow):
 
             # best_answer is kept up-to-date inside the loop; no post-loop fixup needed.
 
-            success = tool_calls_total == 0 or tool_calls_successful > 0
-
             latency_ms = (time.perf_counter() - start) * 1000
             return WorkflowResult(
                 task_id=task.id,
                 workflow_name=self.name,
                 answer=best_answer,
-                success=success,
                 reasoning_steps=reasoning,
                 tools_used=list(dict.fromkeys(tools_used)),
                 tool_calls_total=tool_calls_total,
