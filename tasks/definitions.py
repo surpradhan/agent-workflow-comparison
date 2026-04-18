@@ -55,6 +55,33 @@ registry.register(Task(
     evaluation_criteria="Must reference the 20% discount cap for Enterprise from business rules.",
 ))
 
+registry.register(Task(
+    id="L1_T06",
+    description="What is the most expensive product in the Peripherals category?",
+    level=TaskLevel.RETRIEVAL,
+    expected_tools=["sql_query"],
+    ground_truth="SELECT name, price FROM products WHERE category='Peripherals' ORDER BY price DESC LIMIT 1",
+    evaluation_criteria="Must return the single highest-priced Peripherals product with its price.",
+))
+
+registry.register(Task(
+    id="L1_T07",
+    description="How many distinct customers placed at least one order in 2024?",
+    level=TaskLevel.RETRIEVAL,
+    expected_tools=["sql_query"],
+    ground_truth="SELECT COUNT(DISTINCT customer_id) FROM orders WHERE strftime('%Y', order_date)='2024'",
+    evaluation_criteria="Must return an exact count of unique customers with orders in 2024.",
+))
+
+registry.register(Task(
+    id="L1_T08",
+    description="What is the refund and return policy timeframe for physical hardware products?",
+    level=TaskLevel.RETRIEVAL,
+    expected_tools=["vector_search"],
+    ground_truth="Hardware products have a 30-day return window from delivery date.",
+    evaluation_criteria="Must cite the specific return window for hardware from the business rules.",
+))
+
 # =============================================================================
 # Level 2: Analytical — Trends, aggregations, segmentation
 # =============================================================================
@@ -102,6 +129,27 @@ registry.register(Task(
     expected_tools=["sql_query"],
     ground_truth="JOIN orders with customers, compute cancelled/total ratio per region.",
     evaluation_criteria="Must show cancellation rate per region and note any significant differences.",
+))
+
+registry.register(Task(
+    id="L2_T06",
+    description=(
+        "What percentage of total 2024 revenue does each product category contribute? "
+        "Rank from highest to lowest."
+    ),
+    level=TaskLevel.ANALYTICAL,
+    expected_tools=["sql_query", "calculator"],
+    ground_truth="SUM revenue by category, divide by grand total, rank descending.",
+    evaluation_criteria="Must show correct percentage share for all 5 categories summing to 100%.",
+))
+
+registry.register(Task(
+    id="L2_T07",
+    description="Which customer segment places the highest volume of orders per customer?",
+    level=TaskLevel.ANALYTICAL,
+    expected_tools=["sql_query"],
+    ground_truth="COUNT orders GROUP BY segment, JOIN customers, divide by customer count per segment.",
+    evaluation_criteria="Must compute orders-per-customer for each segment and identify the highest.",
 ))
 
 # =============================================================================
@@ -168,6 +216,26 @@ registry.register(Task(
     ),
 ))
 
+registry.register(Task(
+    id="L3_T05",
+    description=(
+        "Enterprise customers have a higher average order value than SMB customers, "
+        "yet their payment failure rate is also higher. "
+        "Analyze the data and explain this apparent paradox."
+    ),
+    level=TaskLevel.REASONING,
+    expected_tools=["sql_query", "python_analysis"],
+    ground_truth=(
+        "Compare Enterprise vs SMB: order amounts, payment methods used, failure rates by method. "
+        "Higher-value orders may correlate with riskier payment methods or stricter bank checks."
+    ),
+    evaluation_criteria=(
+        "Must query both order values and payment failures by segment, "
+        "identify the underlying driver (e.g. payment method mix or order size thresholds), "
+        "and provide a data-supported explanation."
+    ),
+))
+
 # =============================================================================
 # Level 4: Decision-making — Strategy recommendations with trade-offs
 # =============================================================================
@@ -229,5 +297,24 @@ registry.register(Task(
     evaluation_criteria=(
         "Must analyze all 4 regions comprehensively, consider multiple factors, "
         "and provide a specific recommendation with product mix rationale."
+    ),
+))
+
+registry.register(Task(
+    id="L4_T05",
+    description=(
+        "Should the company consolidate to fewer payment methods to reduce payment failures "
+        "and operational complexity? Analyze the trade-offs and make a recommendation."
+    ),
+    level=TaskLevel.DECISION,
+    expected_tools=["sql_query", "python_analysis", "vector_search"],
+    ground_truth=(
+        "Analyze each payment method by: transaction volume, success rate, revenue at risk, "
+        "and customer segment preference. Weigh consolidation benefits vs. customer churn risk."
+    ),
+    evaluation_criteria=(
+        "Must quantify revenue and volume per payment method, assess failure rates, "
+        "reference business rules on payment policy, acknowledge trade-offs, "
+        "and give a specific actionable recommendation with expected impact."
     ),
 ))

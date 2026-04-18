@@ -1,9 +1,8 @@
 """Base workflow interface that all 10 workflow patterns implement."""
 
 from abc import ABC, abstractmethod
-from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from tasks.task_registry import Task
 
@@ -14,11 +13,15 @@ class WorkflowResult(BaseModel):
     Carries all data needed to compute the 7 benchmark metrics:
     success rate, failure rate, tool accuracy, reasoning steps,
     latency, token cost, retries.
+
+    Not frozen: quality_score is populated by the judge phase after construction.
     """
+
+    model_config = ConfigDict(frozen=False)
 
     task_id: str
     workflow_name: str
-    answer: Any = None
+    answer: str | None = None
     success: bool = False
     reasoning_steps: list[str] = []
     tools_used: list[str] = []
@@ -28,6 +31,7 @@ class WorkflowResult(BaseModel):
     latency_ms: float = 0.0
     retries: int = 0
     error: str | None = None
+    quality_score: float | None = None  # 0.0–1.0 LLM-as-judge score; None if not evaluated
 
 
 class BaseWorkflow(ABC):
@@ -35,6 +39,12 @@ class BaseWorkflow(ABC):
 
     name: str
     description: str
+
+    def _validate_task(self, task: Task) -> str | None:
+        """Return an error string if the task is unusable, else None."""
+        if not task.description or not task.description.strip():
+            return "Task description is empty"
+        return None
 
     @abstractmethod
     async def run(self, task: Task) -> WorkflowResult:

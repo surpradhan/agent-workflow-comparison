@@ -11,13 +11,13 @@ from tasks import registry, TaskLevel
 class TestTaskRegistry:
     def test_all_tasks_loaded(self):
         tasks = registry.all()
-        assert len(tasks) == 18  # 5 + 5 + 4 + 4
+        assert len(tasks) == 25  # 8 + 7 + 5 + 5 (original 18 + 7 added for stat power)
 
     def test_level_distribution(self):
-        assert len(registry.get_by_level(TaskLevel.RETRIEVAL)) == 5
-        assert len(registry.get_by_level(TaskLevel.ANALYTICAL)) == 5
-        assert len(registry.get_by_level(TaskLevel.REASONING)) == 4
-        assert len(registry.get_by_level(TaskLevel.DECISION)) == 4
+        assert len(registry.get_by_level(TaskLevel.RETRIEVAL)) == 8
+        assert len(registry.get_by_level(TaskLevel.ANALYTICAL)) == 7
+        assert len(registry.get_by_level(TaskLevel.REASONING)) == 5
+        assert len(registry.get_by_level(TaskLevel.DECISION)) == 5
 
     def test_get_task_by_id(self):
         task = registry.get("L1_T01")

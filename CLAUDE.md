@@ -39,7 +39,7 @@ mypy .                    # type check
 ### Key base classes (implement these when adding new workflows/tools)
 - `tools/base.py` — `BaseTool` and `ToolResult`: every tool implements `async execute(**kwargs) -> ToolResult`
 - `workflows/base.py` — `BaseWorkflow` and `WorkflowResult`: every workflow pattern implements `async run(task) -> WorkflowResult`
-- `agents/base.py` — `BaseAgent`: agents used within workflow patterns implement `async invoke(prompt) -> str`
+- `agents/llm_client.py` — `LLMClient`: shared LLM invocation layer used by all workflow patterns
 - `tasks/task_registry.py` — `Task`, `TaskLevel`, and `TaskRegistry`: central task registry, tasks have levels 1–4
 - `evaluation/metrics.py` — `WorkflowMetrics`: aggregates `WorkflowResult` objects into per-workflow stats
 - `config/settings.py` — `Settings` singleton loaded from `.env`, accessed via `from config import settings`
@@ -106,4 +106,5 @@ Every workflow run is evaluated on: task success rate, tool accuracy, reasoning 
 - **Week 1:** Dataset ingestion, SQL/vector DB setup, shared tool layer
 - **Week 2:** Workflows 1–6 implementation
 - **Week 3:** Workflows 7–10, evaluation harness integration
-- **Week 4:** Comparative analysis, plots, report, blog article
+- **Week 4:** Comparative analysis infrastructure: plots, analysis report, blog article generator
+- **Week 5:** Run benchmarks, generate results, produce final plots/analysis/blog output

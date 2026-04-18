@@ -2,7 +2,12 @@
 
 Tracks all 7 metrics from the benchmark blueprint:
 task success rate, tool accuracy, reasoning steps, latency, token cost,
-retries, and failure rate.
+retries, and failure rate.  Answer quality (LLM-as-judge) is tracked as
+an optional 8th metric when ground truth is available.
+
+Running-sum design: WorkflowResult objects are NOT stored in memory.
+Each counter is updated incrementally in record(), keeping memory O(1)
+regardless of how many tasks are run.
 """
 
 from dataclasses import dataclass, field
@@ -21,8 +26,14 @@ class WorkflowMetrics:
     total_tokens: int = 0
     total_latency_ms: float = 0.0
     total_retries: int = 0
-    # Per-result tracking for derived metrics
-    results: list[WorkflowResult] = field(default_factory=list)
+    # Running sums for derived metrics — avoids storing all WorkflowResult objects
+    sum_reasoning_steps: int = field(default=0, repr=False)
+    # Per-task tool accuracy accumulation: mean of (successful/total) per task,
+    # so every task contributes equally regardless of how many tools it uses.
+    sum_per_task_tool_accuracy: float = field(default=0.0, repr=False)
+    tool_accuracy_tasks: int = field(default=0, repr=False)
+    sum_quality_score: float = field(default=0.0, repr=False)
+    quality_scored_tasks: int = field(default=0, repr=False)
 
     # --- Blueprint metrics ---
 
@@ -51,24 +62,31 @@ class WorkflowMetrics:
     @property
     def avg_reasoning_steps(self) -> float:
         """Average number of reasoning steps taken across all tasks."""
-        if not self.results:
-            return 0.0
-        return sum(len(r.reasoning_steps) for r in self.results) / len(self.results)
+        return self.sum_reasoning_steps / self.total_tasks if self.total_tasks else 0.0
 
     @property
     def tool_accuracy(self) -> float:
-        """Fraction of tool calls that returned success=True.
+        """Mean per-task tool accuracy.
 
-        Requires WorkflowResult.tool_call_outcomes to be populated by the workflow.
-        Falls back to 0.0 if no outcomes were recorded.
+        Computed as the average of (successful_calls / total_calls) per task,
+        so each task contributes equally regardless of how many tool calls it
+        makes.  Tasks with zero tool calls are excluded from the average.
         """
-        total_calls = sum(r.tool_calls_total for r in self.results)
-        successful_calls = sum(r.tool_calls_successful for r in self.results)
-        return successful_calls / total_calls if total_calls else 0.0
+        return (
+            self.sum_per_task_tool_accuracy / self.tool_accuracy_tasks
+            if self.tool_accuracy_tasks
+            else 0.0
+        )
+
+    @property
+    def avg_quality_score(self) -> float | None:
+        """Average LLM-as-judge quality score (0.0–1.0), or None if not evaluated."""
+        if self.quality_scored_tasks == 0:
+            return None
+        return self.sum_quality_score / self.quality_scored_tasks
 
     def record(self, result: WorkflowResult) -> None:
         """Record a single workflow result and update all counters."""
-        self.results.append(result)
         self.total_tasks += 1
         if result.success:
             self.successes += 1
@@ -77,10 +95,18 @@ class WorkflowMetrics:
         self.total_tokens += result.total_tokens
         self.total_latency_ms += result.latency_ms
         self.total_retries += result.retries
+        self.sum_reasoning_steps += len(result.reasoning_steps)
+        if result.tool_calls_total > 0:
+            per_task_acc = result.tool_calls_successful / result.tool_calls_total
+            self.sum_per_task_tool_accuracy += per_task_acc
+            self.tool_accuracy_tasks += 1
+        if result.quality_score is not None:
+            self.sum_quality_score += result.quality_score
+            self.quality_scored_tasks += 1
 
     def summary(self) -> dict:
-        """Return all 7 blueprint metrics as a dict."""
-        return {
+        """Return all benchmark metrics as a dict."""
+        d = {
             "workflow": self.workflow_name,
             "total_tasks": self.total_tasks,
             "success_rate": round(self.success_rate, 4),
@@ -91,3 +117,7 @@ class WorkflowMetrics:
             "avg_tokens": round(self.avg_tokens, 1),
             "avg_retries": round(self.avg_retries, 2),
         }
+        qs = self.avg_quality_score
+        if qs is not None:
+            d["avg_quality_score"] = round(qs, 4)
+        return d
