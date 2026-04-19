@@ -18,6 +18,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from agents.llm_client import LLMClient
 from agents.tool_dispatcher import ToolDispatcher
 from tasks.task_registry import Task
+from workflows._utils import parse_json
 from workflows.base import BaseWorkflow, WorkflowResult
 
 log = logging.getLogger(__name__)
@@ -55,14 +56,21 @@ class ChainWorkflow(BaseWorkflow):
             reasoning.append("Step 1: Decomposing task into a data retrieval plan")
             decompose_prompt = (
                 f"Task: {task.description}\n\n"
-                "Identify what data you need to answer this question. "
-                'Respond with a JSON object: {"queries": [{"tool": "<name>", "args": {...}}, ...]}\n'
-                "Use only these tools: sql_query, calculator, vector_search, csv_reader, python_analysis. "
-                f"Include at most {_MAX_QUERIES} queries. Be specific with SQL and args."
+                "Identify what data you need to answer this question.\n"
+                f"Include at most {_MAX_QUERIES} queries. Be specific with SQL and args.\n\n"
+                "Use only these tools: sql_query, calculator, vector_search, csv_reader, python_analysis.\n\n"
+                "Example output:\n"
+                '{"queries": [{"tool": "sql_query", "args": {"query": "SELECT product, SUM(revenue) FROM sales GROUP BY product"}}, '
+                '{"tool": "calculator", "args": {"expression": "1250000 / 950000 - 1"}}]}\n\n'
+                "Now output ONLY a JSON object in exactly that format. No explanation, no markdown."
             )
             plan_text, tokens = await self._llm.invoke(
                 [
-                    SystemMessage(content="You are a data analyst. Output only valid JSON, no markdown."),
+                    SystemMessage(content=(
+                        "You are a data analyst. "
+                        "You MUST respond with ONLY a valid JSON object — no prose, no markdown fences, "
+                        "no explanation before or after. Your entire response is the JSON object."
+                    )),
                     HumanMessage(content=decompose_prompt),
                 ]
             )
@@ -99,14 +107,11 @@ class ChainWorkflow(BaseWorkflow):
                 reasoning.append(f"  Retrieved via {tool_name}: {'ok' if result.success else 'failed'}")
             retrieved_data = "\n\n".join(retrieved_parts) if retrieved_parts else "(no data retrieved)"
 
-            # Fix 6: short-circuit if tools were called but every one failed —
-            # proceeding to analyze/synthesize would produce confident hallucination.
             if tool_calls_total > 0 and tool_calls_successful == 0:
                 latency_ms = (time.perf_counter() - start) * 1000
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     tools_used=list(dict.fromkeys(tools_used)),
                     tool_calls_total=tool_calls_total,
@@ -181,18 +186,9 @@ class ChainWorkflow(BaseWorkflow):
 
 
 def _parse_plan(text: str) -> tuple[list[dict], bool]:
-    """Parse the LLM's JSON plan.
+    """Parse the LLM's JSON plan using the shared 3-strategy parser.
 
-    Returns (queries, parse_ok). parse_ok=False means JSON decode failed.
-    Tolerates leading/trailing markdown code fences.
+    Returns (queries, parse_ok). parse_ok=False means all strategies failed.
     """
-    text = text.strip()
-    if text.startswith("```"):
-        lines = text.splitlines()
-        inner = lines[1:-1] if lines[-1].strip() == "```" else lines[1:]
-        text = "\n".join(inner)
-    try:
-        data = json.loads(text)
-        return data.get("queries", []), True
-    except json.JSONDecodeError:
-        return [], False
+    data, ok = parse_json(text)
+    return data.get("queries", []), ok

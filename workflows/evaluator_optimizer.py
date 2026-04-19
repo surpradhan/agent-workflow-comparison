@@ -45,8 +45,9 @@ _EVALUATOR_SYSTEM = (
     "   7 — Good but missing minor details or precision\n"
     "   4 — Partially answers but has significant gaps or errors\n"
     "   0 — Wrong, irrelevant, or unsupported\n\n"
-    'Respond with ONLY valid JSON: {"score": <int>, "critique": "<specific gaps and improvements needed>"}\n'
-    "Be specific — point to exactly what is missing or wrong."
+    'Example: {"score": 7, "critique": "Missing Q4 breakdown and growth rate calculation."}\n\n'
+    "Respond with ONLY a JSON object in exactly that format. "
+    "No prose, no markdown fences, no explanation before or after."
 )
 
 _OPTIMIZER_SYSTEM = (

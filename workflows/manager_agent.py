@@ -110,7 +110,6 @@ class ManagerAgentWorkflow(BaseWorkflow):
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     total_tokens=total_tokens,
                     latency_ms=latency_ms,
@@ -122,7 +121,6 @@ class ManagerAgentWorkflow(BaseWorkflow):
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     total_tokens=total_tokens,
                     latency_ms=latency_ms,

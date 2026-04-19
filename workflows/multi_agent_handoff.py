@@ -95,7 +95,6 @@ class MultiAgentHandoffWorkflow(BaseWorkflow):
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     tools_used=list(dict.fromkeys(tools_used)),
                     tool_calls_total=tool_calls_total,

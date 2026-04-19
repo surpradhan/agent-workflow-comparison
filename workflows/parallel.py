@@ -18,6 +18,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from agents.llm_client import LLMClient
 from agents.tool_dispatcher import ToolDispatcher
 from tasks.task_registry import Task
+from workflows._utils import parse_json
 from workflows.base import BaseWorkflow, WorkflowResult
 
 log = logging.getLogger(__name__)
@@ -169,14 +170,9 @@ class ParallelWorkflow(BaseWorkflow):
 
 
 def _parse_plan(text: str) -> tuple[list[dict], bool]:
-    """Parse the LLM's JSON plan. Returns (queries, parse_ok)."""
-    text = text.strip()
-    if text.startswith("```"):
-        lines = text.splitlines()
-        inner = lines[1:-1] if lines[-1].strip() == "```" else lines[1:]
-        text = "\n".join(inner)
-    try:
-        data = json.loads(text)
-        return data.get("queries", []), True
-    except json.JSONDecodeError:
-        return [], False
+    """Parse the LLM's JSON plan using the shared 3-strategy parser.
+
+    Returns (queries, parse_ok). parse_ok=False means all strategies failed.
+    """
+    data, ok = parse_json(text)
+    return data.get("queries", []), ok

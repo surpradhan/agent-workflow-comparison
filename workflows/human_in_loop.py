@@ -43,26 +43,32 @@ _MAX_PLAN_REVISIONS = 1   # how many times the human can send the plan back
 _PLANNER_SYSTEM = (
     "You are a business analyst planning how to answer a business question.\n\n"
     "Propose a clear step-by-step retrieval plan before executing anything.\n"
-    "Be explicit about which tools you will use and why.\n\n"
-    'Respond with ONLY valid JSON:\n'
-    '{"rationale": "<why these steps>", '
-    '"queries": [{"tool": "<name>", "args": {...}, "purpose": "<why>"}]}\n'
     "Use tools: sql_query, calculator, vector_search, csv_reader, python_analysis. "
-    f"Include at most {_MAX_PLAN_QUERIES} queries."
+    f"Include at most {_MAX_PLAN_QUERIES} queries.\n\n"
+    "Example output:\n"
+    '{"rationale": "Need revenue by region then growth rate calculation.", '
+    '"queries": [{"tool": "sql_query", "args": {"query": "SELECT region, SUM(revenue) FROM sales GROUP BY region"}, "purpose": "Get revenue by region"}, '
+    '{"tool": "calculator", "args": {"expression": "450000 / 380000 - 1"}, "purpose": "Calculate growth rate"}]}\n\n'
+    "Respond with ONLY a JSON object in exactly that format. "
+    "No prose, no markdown fences, no explanation before or after."
 )
 
 _HUMAN_REVIEW_SYSTEM = (
     "You are a domain expert reviewing an analyst's retrieval plan.\n\n"
     "Approve the plan if the proposed queries will gather the data needed to answer the question.\n"
     "Reject it (with specific feedback) only if a critical data source is missing.\n\n"
-    'Respond with ONLY valid JSON: {"approved": true/false, "feedback": "<comment or empty>"}'
+    'Example: {"approved": true, "feedback": ""}\n'
+    'Example: {"approved": false, "feedback": "Missing regional breakdown data."}\n\n'
+    "Respond with ONLY a JSON object in exactly that format. No prose, no markdown fences."
 )
 
 _HUMAN_CONFIRM_SYSTEM = (
     "You are a business stakeholder reviewing a draft answer.\n\n"
     "Approve the answer if it is accurate and responsive to the question.\n"
     "Reject it (with specific feedback) only if it is clearly wrong or missing critical information.\n\n"
-    'Respond with ONLY valid JSON: {"approved": true/false, "feedback": "<comment or empty>"}'
+    'Example: {"approved": true, "feedback": ""}\n'
+    'Example: {"approved": false, "feedback": "The answer does not include Q4 figures."}\n\n'
+    "Respond with ONLY a JSON object in exactly that format. No prose, no markdown fences."
 )
 
 _ANALYST_SYSTEM = "You are a business analyst. Provide precise, data-backed answers."
@@ -117,7 +123,6 @@ class HumanInLoopWorkflow(BaseWorkflow):
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     total_tokens=total_tokens,
                     latency_ms=latency_ms,
@@ -190,7 +195,6 @@ class HumanInLoopWorkflow(BaseWorkflow):
                 return WorkflowResult(
                     task_id=task.id,
                     workflow_name=self.name,
-                    success=False,
                     reasoning_steps=reasoning,
                     tools_used=list(dict.fromkeys(tools_used)),
                     tool_calls_total=tool_calls_total,
