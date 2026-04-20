@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Workflow Benchmark — 10 Patterns Head-to-Head</title>
+  <meta name="description" content="A controlled benchmark comparing 10 AI agent workflow patterns on 25 business tasks. Find out which pattern wins on speed, quality, and completion." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3347;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --code-bg: #0d1117;
+      --radius: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    nav .logo { font-weight: 700; font-size: 0.95rem; color: var(--accent2); letter-spacing: -0.02em; }
+    nav .links { display: flex; gap: 1.5rem; }
+    nav .links a { color: var(--muted); text-decoration: none; font-size: 0.875rem; transition: color .2s; }
+    nav .links a:hover { color: var(--text); }
+    nav .gh-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none; padding: 0.4rem 0.9rem;
+      border-radius: 6px; font-size: 0.8rem; font-weight: 500;
+      display: flex; align-items: center; gap: 0.4rem; transition: background .2s;
+    }
+    nav .gh-btn:hover { background: var(--border); }
+
+    /* ── Sections ── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    section + section { padding-top: 0; }
+
+    h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; }
+    h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
+    p { color: var(--muted); margin-bottom: 1rem; }
+    p strong { color: var(--text); }
+
+    /* ── Hero ── */
+    #hero { padding-top: 6rem; text-align: center; }
+    #hero .eyebrow {
+      display: inline-block; background: rgba(99,102,241,.15);
+      color: var(--accent2); border: 1px solid rgba(99,102,241,.3);
+      border-radius: 99px; padding: 0.3rem 1rem; font-size: 0.8rem;
+      font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    #hero h1 { max-width: 780px; margin: 0 auto 1.5rem; }
+    #hero .subtitle { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; }
+    .stats-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .stat-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 2rem; text-align: center; min-width: 140px;
+    }
+    .stat-pill .num { font-size: 2.2rem; font-weight: 800; color: var(--accent2); letter-spacing: -0.03em; }
+    .stat-pill .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #fff; text-decoration: none;
+      padding: 0.7rem 1.6rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      transition: background .2s;
+    }
+    .btn-primary:hover { background: #4f52d8; }
+    .btn-ghost {
+      background: transparent; color: var(--text); text-decoration: none;
+      padding: 0.7rem 1.6rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      border: 1px solid var(--border); transition: background .2s;
+    }
+    .btn-ghost:hover { background: var(--surface); }
+
+    /* ── Results Table ── */
+    .results-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .results-table thead th {
+      background: var(--surface2); color: var(--muted); font-weight: 600;
+      text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em;
+      padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .results-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    .results-table tbody tr:hover { background: var(--surface); }
+    .results-table td { padding: 0.85rem 1rem; vertical-align: middle; }
+    .rank-cell { font-size: 1.2rem; text-align: center; width: 52px; }
+    .workflow-name { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82rem; color: var(--accent2); }
+    .bar-cell { min-width: 140px; }
+    .bar-wrap { background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+    .bar-label { font-size: 0.78rem; color: var(--text); margin-top: 3px; }
+    .quality-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .latency-val { color: var(--muted); font-size: 0.82rem; }
+    .tokens-val { color: var(--muted); font-size: 0.82rem; }
+
+    /* ── Findings ── */
+    .findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+    .finding-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      position: relative; overflow: hidden;
+    }
+    .finding-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .finding-card.c1::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+    .finding-card.c2::before { background: linear-gradient(90deg, #22c55e, #4ade80); }
+    .finding-card.c3::before { background: linear-gradient(90deg, #eab308, #fde047); }
+    .finding-card.c4::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+    .finding-card .icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .finding-card h3 { color: var(--text); }
+    .finding-card p { font-size: 0.875rem; margin: 0; }
+
+    /* ── Plots ── */
+    .plots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 1.5rem; }
+    .plot-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .plot-card img { width: 100%; display: block; }
+    .plot-card figcaption { padding: 0.85rem 1rem; font-size: 0.8rem; color: var(--muted); }
+
+    /* ── Workflow Cards ── */
+    .workflows-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+    .wf-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .wf-num {
+      min-width: 32px; height: 32px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent2);
+    }
+    .wf-card h3 { font-size: 0.9rem; color: var(--text); }
+    .wf-card p { font-size: 0.82rem; margin: 0; }
+
+    /* ── Recommendations ── */
+    .rec-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .rec-table thead th {
+      background: var(--surface2); color: var(--muted); font-weight: 600;
+      text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em;
+      padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .rec-table tbody tr { border-bottom: 1px solid var(--border); }
+    .rec-table tbody tr:hover { background: var(--surface); }
+    .rec-table td { padding: 0.85rem 1rem; }
+    .rec-table td:nth-child(2) { font-family: "SF Mono","Fira Code",monospace; color: var(--accent2); font-size: 0.82rem; }
+    .rec-table td:nth-child(3) { color: var(--muted); font-size: 0.82rem; }
+
+    /* ── Setup ── */
+    pre {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; overflow-x: auto;
+      font-family: "SF Mono","Fira Code",monospace; font-size: 0.82rem;
+      line-height: 1.7; color: #c9d1d9;
+    }
+    pre .comment { color: #8b949e; }
+    pre .cmd { color: #79c0ff; }
+    pre .str { color: #a5d6ff; }
+
+    /* ── Task levels ── */
+    .levels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .level-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .level-badge {
+      display: inline-block; padding: 0.2rem 0.6rem;
+      border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.04em; margin-bottom: 0.6rem;
+    }
+    .l1 { background: rgba(99,102,241,.2); color: #818cf8; }
+    .l2 { background: rgba(34,197,94,.15); color: #4ade80; }
+    .l3 { background: rgba(234,179,8,.15); color: #fde047; }
+    .l4 { background: rgba(239,68,68,.15); color: #f87171; }
+    .level-card h3 { font-size: 0.88rem; }
+    .level-card p { font-size: 0.8rem; margin: 0; font-style: italic; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+      text-align: center; color: var(--muted); font-size: 0.82rem;
+    }
+    footer a { color: var(--accent2); text-decoration: none; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      nav .links { display: none; }
+      .plots-grid { grid-template-columns: 1fr; }
+      .results-table .bar-cell, .results-table .latency-val, .results-table .tokens-val { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="logo">⚙ Agent Workflow Benchmark</div>
+  <div class="links">
+    <a href="#results">Results</a>
+    <a href="#findings">Findings</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#setup">Setup</a>
+  </div>
+  <a class="gh-btn" href="https://github.com/surabhi7pradhan/agent-workflow-analysis" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    GitHub
+  </a>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <div class="eyebrow">Open-Source Benchmark</div>
+  <h1>10 AI Agent Workflow Patterns,<br>Head-to-Head</h1>
+  <p class="subtitle">A controlled experiment measuring completion rate, answer quality, tool accuracy, and latency across every major agentic architecture — on the same dataset, with the same LLM.</p>
+  <div class="stats-row">
+    <div class="stat-pill"><div class="num">10</div><div class="label">Workflows</div></div>
+    <div class="stat-pill"><div class="num">25</div><div class="label">Tasks</div></div>
+    <div class="stat-pill"><div class="num">250</div><div class="label">Total Runs</div></div>
+    <div class="stat-pill"><div class="num">4</div><div class="label">Task Levels</div></div>
+  </div>
+  <div class="hero-btns">
+    <a class="btn-primary" href="#results">See Results ↓</a>
+    <a class="btn-ghost" href="https://github.com/surabhi7pradhan/agent-workflow-analysis" target="_blank">View on GitHub</a>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Results ── -->
+<section id="results">
+  <h2>Benchmark Results</h2>
+  <p>Ranked by composite score (success rate, quality, tool accuracy). Run with <code style="color:var(--accent2);background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.82rem">llama3.1:8b</code> via Ollama on a local M1 Pro 16 GB.</p>
+
+  <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th style="width:52px">Rank</th>
+          <th>Workflow</th>
+          <th>Completion</th>
+          <th>Quality</th>
+          <th class="latency-val">Latency</th>
+          <th class="tokens-val">Tokens</th>
+          <th class="bar-cell">Tool Acc.</th>
+        </tr>
+      </thead>
+      <tbody id="results-body"></tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:0.78rem">
+    <strong>Completion</strong> = workflow produced a non-empty answer. &nbsp;
+    <strong>Quality</strong> = LLM-as-judge score 0–1 against ground truth. &nbsp;
+    <strong>Tool Acc.</strong> = fraction of tool calls that succeeded.
+  </p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Findings ── -->
+<section id="findings">
+  <h2>Stand-out Findings</h2>
+  <div class="findings-grid">
+    <div class="finding-card c1">
+      <div class="icon">⚡</div>
+      <h3>tool_using was fastest</h3>
+      <p>At 13,581 ms avg, the ReAct loop was 7× faster than evaluator-optimizer. Single-pass patterns have a natural latency edge.</p>
+    </div>
+    <div class="finding-card c2">
+      <div class="icon">🎯</div>
+      <h3>human_in_loop had highest quality</h3>
+      <p>Score 0.836 — but only 44% completion. Human checkpoints filter out poor answers before they're returned. Quality and coverage trade off.</p>
+    </div>
+    <div class="finding-card c3">
+      <div class="icon">🪙</div>
+      <h3>single_step was most token-efficient</h3>
+      <p>438 tokens avg — 8× cheaper than evaluator-optimizer. A well-prompted single LLM call often beats complex pipelines on L1/L2 tasks.</p>
+    </div>
+    <div class="finding-card c4">
+      <div class="icon">📈</div>
+      <h3>Complexity helps on hard tasks</h3>
+      <p>Simple patterns close the gap on L1/L2. On L3/L4 reasoning and decision tasks, multi-agent architectures pull ahead on quality.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Visualisations ── -->
+<section id="plots">
+  <h2>Visualisations</h2>
+  <div class="plots-grid">
+    <figure class="plot-card">
+      <img src="assets/success_rate_bar.png" alt="Success rate by workflow" loading="lazy" />
+      <figcaption>Fig 1 — Completion rate per workflow, sorted low-to-high.</figcaption>
+    </figure>
+    <figure class="plot-card">
+      <img src="assets/radar.png" alt="Multi-metric radar chart" loading="lazy" />
+      <figcaption>Fig 2 — Spider chart across 7 normalised metrics. Larger area = better overall profile.</figcaption>
+    </figure>
+    <figure class="plot-card">
+      <img src="assets/quality_heatmap.png" alt="Quality heatmap" loading="lazy" />
+      <figcaption>Fig 3 — Z-score heatmap; green = above average, red = below average.</figcaption>
+    </figure>
+    <figure class="plot-card">
+      <img src="assets/level_breakdown.png" alt="Success by task level" loading="lazy" />
+      <figcaption>Fig 4 — Per-workflow completion rate at each task difficulty level (L1–L4).</figcaption>
+    </figure>
+    <figure class="plot-card">
+      <img src="assets/latency_tokens.png" alt="Latency vs token cost" loading="lazy" />
+      <figcaption>Fig 5 — Latency (x) vs token cost (y); bubble size = quality score.</figcaption>
+    </figure>
+    <figure class="plot-card">
+      <img src="assets/cost_efficiency.png" alt="Cost efficiency" loading="lazy" />
+      <figcaption>Fig 6 — Quality score per 1,000 tokens. Higher = more efficient.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Methodology ── -->
+<section id="methodology">
+  <h2>Methodology</h2>
+  <p>All 10 workflows share the same LLM, tools, dataset, and judge. The only variable is the workflow architecture.</p>
+
+  <div class="levels-grid">
+    <div class="level-card">
+      <div class="level-badge l1">L1 · Retrieval</div>
+      <h3>8 tasks</h3>
+      <p>"What is total revenue for Hardware in March 2024?"</p>
+    </div>
+    <div class="level-card">
+      <div class="level-badge l2">L2 · Analytical</div>
+      <h3>7 tasks</h3>
+      <p>"What is the month-over-month revenue trend for 2024?"</p>
+    </div>
+    <div class="level-card">
+      <div class="level-badge l3">L3 · Reasoning</div>
+      <h3>5 tasks</h3>
+      <p>"Why did the payment success rate drop in March 2024?"</p>
+    </div>
+    <div class="level-card">
+      <div class="level-badge l4">L4 · Decision</div>
+      <h3>5 tasks</h3>
+      <p>"Should we raise prices on high-margin products or focus on volume?"</p>
+    </div>
+  </div>
+
+  <p><strong>Dataset:</strong> SQLite business database (customers, orders, products, inventory, payments, revenue) + ChromaDB vector store for policy documents.</p>
+  <p><strong>Tools available:</strong> sql_query · csv_reader · vector_search · calculator · python_analysis</p>
+  <p><strong>Judge:</strong> LLM-as-judge scores each answer 0.0–1.0 against ground truth using the same model.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Patterns ── -->
+<section id="patterns">
+  <h2>The 10 Workflow Patterns</h2>
+  <div class="workflows-grid">
+    <div class="wf-card"><div class="wf-num">1</div><div><h3>Single-step</h3><p>One LLM call. No tools. The baseline.</p></div></div>
+    <div class="wf-card"><div class="wf-num">2</div><div><h3>Tool-using</h3><p>ReAct loop: model selects and calls tools iteratively until it has enough information.</p></div></div>
+    <div class="wf-card"><div class="wf-num">3</div><div><h3>Chain</h3><p>Four deterministic stages: decompose → retrieve → analyse → synthesise.</p></div></div>
+    <div class="wf-card"><div class="wf-num">4</div><div><h3>Routing</h3><p>A classifier decides which specialist handler to invoke for each task type.</p></div></div>
+    <div class="wf-card"><div class="wf-num">5</div><div><h3>Parallel</h3><p>Multiple independent sub-queries run concurrently via asyncio.gather; results merged.</p></div></div>
+    <div class="wf-card"><div class="wf-num">6</div><div><h3>Orchestrator-workers</h3><p>Central orchestrator fans out to specialised worker agents in parallel.</p></div></div>
+    <div class="wf-card"><div class="wf-num">7</div><div><h3>Evaluator-optimizer</h3><p>Generate → Evaluate → Optimize self-refinement loop with early stopping.</p></div></div>
+    <div class="wf-card"><div class="wf-num">8</div><div><h3>Manager agent</h3><p>Manager supervises specialist sub-agents sequentially with active output review.</p></div></div>
+    <div class="wf-card"><div class="wf-num">9</div><div><h3>Multi-agent handoff</h3><p>Retrieval → Analysis → Synthesis, each step handled by a specialist agent.</p></div></div>
+    <div class="wf-card"><div class="wf-num">10</div><div><h3>Human-in-the-loop</h3><p>Checkpoints pause execution for human approval at plan and answer review stages.</p></div></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Recommendations ── -->
+<section id="recommendations">
+  <h2>Pattern Selection Guide</h2>
+  <p>Based on benchmark results — pick the pattern that matches your constraints.</p>
+  <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)">
+    <table class="rec-table">
+      <thead>
+        <tr><th>Situation</th><th>Best pattern</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Simple lookups, low latency budget</td><td>single_step</td><td>Zero overhead, 100% completion</td></tr>
+        <tr><td>Need external data or tools</td><td>tool_using</td><td>ReAct is battle-tested, fastest (13,581 ms)</td></tr>
+        <tr><td>Predictable pipeline, auditability required</td><td>chain</td><td>Deterministic stages, easy to debug</td></tr>
+        <tr><td>Mixed task types in one system</td><td>routing</td><td>Avoids one-size-fits-all cost</td></tr>
+        <tr><td>Parallel data gathering</td><td>parallel</td><td>asyncio.gather saves wall-clock time</td></tr>
+        <tr><td>Complex L3/L4 tasks</td><td>orchestrator-workers / multi-agent handoff</td><td>Specialisation helps on hard tasks</td></tr>
+        <tr><td>Quality is paramount, latency is flexible</td><td>evaluator_optimizer</td><td>Self-refinement raises the quality ceiling</td></tr>
+        <tr><td>High-stakes decisions</td><td>human_in_loop</td><td>Highest quality (0.836); humans catch edge cases</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Setup ── -->
+<section id="setup">
+  <h2>Get Started</h2>
+  <p>Run the full benchmark locally in minutes.</p>
+<pre><span class="comment"># Clone and install</span>
+git clone https://github.com/surabhi7pradhan/agent-workflow-analysis
+cd agent-workflow-analysis
+python -m venv .venv && source .venv/bin/activate
+pip install -e <span class="str">".[dev]"</span>
+
+<span class="comment"># Configure (Ollama recommended — no API key needed)</span>
+cp .env.example .env
+<span class="comment"># Set LLM_PROVIDER=ollama, LLM_MODEL=llama3.1:8b in .env</span>
+ollama pull llama3.1:8b
+
+<span class="comment"># Run the full benchmark</span>
+python -m scripts.cli run
+
+<span class="comment"># Generate plots, analysis, and blog post</span>
+python -m scripts.cli plot
+python -m scripts.cli analyze
+python -m scripts.cli blog</pre>
+
+  <p style="margin-top:1.5rem">Supports <strong>Ollama</strong> (local), <strong>Anthropic</strong>, <strong>OpenAI</strong>, and <strong>Groq</strong> — swappable via a single config key.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Footer ── -->
+<footer>
+  <p>Built by <a href="https://github.com/surabhi7pradhan">Surabhi Pradhan</a> · <a href="https://github.com/surabhi7pradhan/agent-workflow-analysis">GitHub Repository</a></p>
+  <p style="margin-top:0.5rem">Benchmark run with llama3.1:8b via Ollama · 250 runs · April 2026</p>
+</footer>
+
+<script>
+  const data = [
+    { rank: "🥇", name: "tool_using",           success: 100, quality: 0.572, latency: 13581,  tokens: 1086, toolAcc: 60.0 },
+    { rank: "🥈", name: "parallel",             success: 100, quality: 0.696, latency: 30362,  tokens: 1219, toolAcc: 25.0 },
+    { rank: "🥉", name: "single_step",          success: 100, quality: 0.748, latency: 23089,  tokens: 438,  toolAcc: 0.0  },
+    { rank: "4",  name: "routing",              success: 100, quality: 0.484, latency: 24310,  tokens: 853,  toolAcc: 4.2  },
+    { rank: "5",  name: "evaluator_optimizer",  success: 100, quality: 0.720, latency: 93872,  tokens: 3575, toolAcc: 21.4 },
+    { rank: "6",  name: "multi_agent_handoff",  success: 84,  quality: 0.729, latency: 48107,  tokens: 3480, toolAcc: 77.4 },
+    { rank: "7",  name: "manager_agent",        success: 80,  quality: 0.550, latency: 36946,  tokens: 1399, toolAcc: 1.6  },
+    { rank: "8",  name: "orchestrator_workers", success: 64,  quality: 0.637, latency: 25417,  tokens: 871,  toolAcc: 0.0  },
+    { rank: "9",  name: "chain",                success: 56,  quality: 0.700, latency: 52137,  tokens: 3233, toolAcc: 23.6 },
+    { rank: "10", name: "human_in_loop",        success: 44,  quality: 0.836, latency: 23978,  tokens: 1460, toolAcc: 22.0 },
+  ];
+
+  function successColor(v) {
+    if (v === 100) return "#22c55e";
+    if (v >= 80)  return "#84cc16";
+    if (v >= 60)  return "#eab308";
+    return "#ef4444";
+  }
+
+  function qualityColor(v) {
+    if (v >= 0.75) return { bg: "rgba(34,197,94,.18)", fg: "#4ade80" };
+    if (v >= 0.60) return { bg: "rgba(234,179,8,.15)", fg: "#fde047" };
+    return { bg: "rgba(148,163,184,.12)", fg: "#94a3b8" };
+  }
+
+  function fmtLatency(ms) {
+    return ms >= 1000 ? (ms / 1000).toFixed(1) + "s" : ms + "ms";
+  }
+
+  const tbody = document.getElementById("results-body");
+  data.forEach(r => {
+    const qc = qualityColor(r.quality);
+    tbody.innerHTML += `
+      <tr>
+        <td class="rank-cell">${r.rank}</td>
+        <td><span class="workflow-name">${r.name}</span></td>
+        <td class="bar-cell">
+          <div class="bar-wrap"><div class="bar-fill" style="width:${r.success}%;background:${successColor(r.success)}"></div></div>
+          <div class="bar-label">${r.success}%</div>
+        </td>
+        <td>
+          <div class="quality-dot" style="background:${qc.bg};color:${qc.fg}">${r.quality.toFixed(2)}</div>
+        </td>
+        <td class="latency-val">${fmtLatency(r.latency)}</td>
+        <td class="tokens-val">${r.tokens.toLocaleString()}</td>
+        <td class="bar-cell">
+          <div class="bar-wrap"><div class="bar-fill" style="width:${r.toolAcc}%;background:#6366f1"></div></div>
+          <div class="bar-label">${r.toolAcc}%</div>
+        </td>
+      </tr>`;
+  });
+</script>
+</body>
+</html>
