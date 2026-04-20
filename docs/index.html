@@ -495,33 +495,7 @@
     .finding-card h3 { font-size: 0.95rem; color: var(--text); position: relative; z-index: 1; }
     .finding-card p  { font-size: 0.84rem; margin: 0.5rem 0 0; position: relative; z-index: 1; }
 
-    /* ── Plots ── */
-    .plots-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(490px, 1fr));
-      gap: 1.5rem;
-    }
-    .plot-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: all 0.3s;
-    }
-    .plot-card:hover {
-      border-color: rgba(0,212,255,0.28);
-      box-shadow: 0 0 35px rgba(0,212,255,0.07), 0 8px 40px rgba(0,0,0,0.35);
-      transform: translateY(-3px);
-    }
-    .plot-card img { width: 100%; display: block; }
-    .plot-cap {
-      padding: 0.85rem 1rem;
-      font-family: var(--mono);
-      font-size: 0.75rem; color: var(--muted);
-      border-top: 1px solid var(--border);
-    }
-
-    /* ── Levels ── */
+/* ── Levels ── */
     .levels-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -712,7 +686,6 @@
   <div class="nav-links">
     <a href="#results">Results</a>
     <a href="#findings">Findings</a>
-    <a href="#plots">Charts</a>
     <a href="#patterns">Patterns</a>
     <a href="#setup">Setup</a>
   </div>
@@ -836,43 +809,6 @@
     </div>
   </section>
 
-  <hr class="divider" />
-
-  <!-- ── Visualisations ── -->
-  <section id="plots">
-    <div class="container">
-      <div class="section-label">Visualisations</div>
-      <h2>Charts</h2>
-      <div class="plots-grid">
-        <figure class="plot-card">
-          <img src="assets/success_rate_bar.png" alt="Success rate by workflow" loading="lazy" />
-          <figcaption class="plot-cap">Fig 1 — Completion rate per workflow, sorted low-to-high.</figcaption>
-        </figure>
-        <figure class="plot-card">
-          <img src="assets/radar.png" alt="Multi-metric radar chart" loading="lazy" />
-          <figcaption class="plot-cap">Fig 2 — Spider chart across 7 normalised metrics. Larger area = better overall profile.</figcaption>
-        </figure>
-        <figure class="plot-card">
-          <img src="assets/quality_heatmap.png" alt="Quality heatmap" loading="lazy" />
-          <figcaption class="plot-cap">Fig 3 — Z-score heatmap; green = above average, red = below average.</figcaption>
-        </figure>
-        <figure class="plot-card">
-          <img src="assets/level_breakdown.png" alt="Success by task level" loading="lazy" />
-          <figcaption class="plot-cap">Fig 4 — Per-workflow completion rate at each task difficulty level (L1–L4).</figcaption>
-        </figure>
-        <figure class="plot-card">
-          <img src="assets/latency_tokens.png" alt="Latency vs token cost" loading="lazy" />
-          <figcaption class="plot-cap">Fig 5 — Latency (x) vs token cost (y); bubble size = quality score.</figcaption>
-        </figure>
-        <figure class="plot-card">
-          <img src="assets/cost_efficiency.png" alt="Cost efficiency" loading="lazy" />
-          <figcaption class="plot-cap">Fig 6 — Quality score per 1,000 tokens. Higher = more efficient.</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider" />
 
   <!-- ── Methodology ── -->
   <section id="methodology">
