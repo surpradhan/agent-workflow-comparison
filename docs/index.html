@@ -4,234 +4,715 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agent Workflow Benchmark — 10 Patterns Head-to-Head</title>
-  <meta name="description" content="A controlled benchmark comparing 10 AI agent workflow patterns on 25 business tasks. Find out which pattern wins on speed, quality, and completion." />
+  <meta name="description" content="A controlled benchmark comparing 10 AI agent workflow patterns on 25 business tasks. Which agentic architecture wins on speed, quality, and completion?" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f1117;
-      --surface: #1a1d27;
-      --surface2: #22263a;
-      --border: #2e3347;
-      --accent: #6366f1;
-      --accent2: #818cf8;
-      --green: #22c55e;
-      --yellow: #eab308;
-      --red: #ef4444;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --code-bg: #0d1117;
-      --radius: 10px;
+      --bg:            #030508;
+      --bg2:           #07090f;
+      --surface:       rgba(0, 212, 255, 0.04);
+      --surface2:      rgba(0, 212, 255, 0.08);
+      --border:        rgba(0, 212, 255, 0.14);
+      --border-hi:     rgba(0, 212, 255, 0.45);
+      --cyan:          #00d4ff;
+      --cyan-dim:      rgba(0, 212, 255, 0.6);
+      --violet:        #7b2ff7;
+      --pink:          #ff006e;
+      --green:         #00ffa3;
+      --amber:         #ffb800;
+      --red:           #ff3860;
+      --text:          #c8e0ff;
+      --muted:         rgba(200, 224, 255, 0.45);
+      --font:          'Space Grotesk', -apple-system, sans-serif;
+      --mono:          'JetBrains Mono', 'Fira Code', monospace;
+      --radius:        14px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: var(--font);
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
     }
+
+    /* ── Neural canvas ── */
+    #neural-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Scanline overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 212, 255, 0.011) 3px,
+        rgba(0, 212, 255, 0.011) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Vignette ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(3,5,8,0.7) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    nav, main, footer { position: relative; z-index: 10; }
 
     /* ── Nav ── */
     nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(15,17,23,0.85);
-      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(3, 5, 8, 0.82);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
+      padding: 0 2.5rem;
       display: flex; align-items: center; justify-content: space-between;
-      height: 56px;
+      height: 62px;
     }
-    nav .logo { font-weight: 700; font-size: 0.95rem; color: var(--accent2); letter-spacing: -0.02em; }
-    nav .links { display: flex; gap: 1.5rem; }
-    nav .links a { color: var(--muted); text-decoration: none; font-size: 0.875rem; transition: color .2s; }
-    nav .links a:hover { color: var(--text); }
-    nav .gh-btn {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); text-decoration: none; padding: 0.4rem 0.9rem;
-      border-radius: 6px; font-size: 0.8rem; font-weight: 500;
-      display: flex; align-items: center; gap: 0.4rem; transition: background .2s;
-    }
-    nav .gh-btn:hover { background: var(--border); }
 
-    /* ── Sections ── */
-    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .nav-left { display: flex; align-items: center; gap: 1.2rem; }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      text-decoration: none;
+      color: var(--cyan);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: -0.01em;
+    }
+
+    .logo-hex {
+      width: 30px; height: 30px;
+      border: 1.5px solid var(--cyan);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      box-shadow: 0 0 12px rgba(0,212,255,0.35), inset 0 0 8px rgba(0,212,255,0.08);
+      animation: hex-breathe 3s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes hex-breathe {
+      0%,100% { box-shadow: 0 0 12px rgba(0,212,255,0.35), inset 0 0 8px rgba(0,212,255,0.08); }
+      50%      { box-shadow: 0 0 24px rgba(0,212,255,0.6),  inset 0 0 14px rgba(0,212,255,0.15); }
+    }
+
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(0,255,163,0.08);
+      border: 1px solid rgba(0,255,163,0.22);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.55rem;
+      border-radius: 99px;
+    }
+    .live-dot {
+      width: 5px; height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 5px var(--green);
+      animation: live-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    .gh-btn {
+      display: flex; align-items: center; gap: 0.45rem;
+      background: rgba(0,212,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text); text-decoration: none;
+      padding: 0.45rem 1rem; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: all 0.25s;
+    }
+    .gh-btn:hover {
+      border-color: var(--border-hi);
+      background: rgba(0,212,255,0.11);
+      box-shadow: 0 0 18px rgba(0,212,255,0.14);
+      color: var(--cyan);
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+
+    section { padding: 6.5rem 0; }
     section + section { padding-top: 0; }
 
-    h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; }
-    h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
-    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
-    p { color: var(--muted); margin-bottom: 1rem; }
-    p strong { color: var(--text); }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+      opacity: 0.85;
+    }
+    .section-label::before {
+      content: '';
+      display: block; width: 22px; height: 1px;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      margin-bottom: 0.75rem;
+    }
+    h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.45rem; }
+    p  { color: var(--muted); margin-bottom: 1rem; line-height: 1.75; }
+    p strong { color: var(--text); font-weight: 600; }
+
+    .gradient-text {
+      background: linear-gradient(125deg, #00d4ff 0%, #9555f5 42%, #ff006e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .divider {
+      border: none; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--border) 30%, var(--border) 70%, transparent 100%);
+    }
 
     /* ── Hero ── */
-    #hero { padding-top: 6rem; text-align: center; }
-    #hero .eyebrow {
-      display: inline-block; background: rgba(99,102,241,.15);
-      color: var(--accent2); border: 1px solid rgba(99,102,241,.3);
-      border-radius: 99px; padding: 0.3rem 1rem; font-size: 0.8rem;
-      font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1.5rem;
-      text-transform: uppercase;
-    }
-    #hero h1 { max-width: 780px; margin: 0 auto 1.5rem; }
-    #hero .subtitle { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; }
-    .stats-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 3rem; }
-    .stat-pill {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem 2rem; text-align: center; min-width: 140px;
-    }
-    .stat-pill .num { font-size: 2.2rem; font-weight: 800; color: var(--accent2); letter-spacing: -0.03em; }
-    .stat-pill .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--accent); color: #fff; text-decoration: none;
-      padding: 0.7rem 1.6rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
-      transition: background .2s;
-    }
-    .btn-primary:hover { background: #4f52d8; }
-    .btn-ghost {
-      background: transparent; color: var(--text); text-decoration: none;
-      padding: 0.7rem 1.6rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
-      border: 1px solid var(--border); transition: background .2s;
-    }
-    .btn-ghost:hover { background: var(--surface); }
+    #hero { padding: 8rem 0 5.5rem; text-align: center; }
 
-    /* ── Results Table ── */
-    .results-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(0,212,255,0.06);
+      border: 1px solid rgba(0,212,255,0.18);
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.38rem 1.1rem; border-radius: 99px;
+      margin-bottom: 2.2rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--cyan); border-radius: 50%;
+      box-shadow: 0 0 7px var(--cyan);
+      animation: live-pulse 1.5s ease-in-out infinite;
+    }
+
+    #hero h1 { max-width: 860px; margin: 0 auto 1.8rem; }
+
+    /* Glitch */
+    .glitch-wrap {
+      display: inline-block;
+      position: relative;
+    }
+    .glitch-wrap::before,
+    .glitch-wrap::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      opacity: 0;
+    }
+    .glitch-wrap::before {
+      color: var(--cyan);
+      clip-path: polygon(0 15%, 100% 15%, 100% 40%, 0 40%);
+      animation: glt-a 9s 2s infinite;
+    }
+    .glitch-wrap::after {
+      color: var(--pink);
+      clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%);
+      animation: glt-b 9s 2s infinite;
+    }
+    @keyframes glt-a {
+      0%,88%,100% { transform: none; opacity: 0; }
+      90%  { transform: translate(-4px, 0); opacity: 1; }
+      92%  { transform: translate(4px, 0); opacity: 1; }
+      94%  { transform: translate(-2px, 0); opacity: 1; }
+      96%  { transform: none; opacity: 0; }
+    }
+    @keyframes glt-b {
+      0%,89%,100% { transform: none; opacity: 0; }
+      91%  { transform: translate(5px, 0); opacity: 1; }
+      93%  { transform: translate(-4px, 0); opacity: 1; }
+      95%  { transform: translate(2px, 0); opacity: 1; }
+      97%  { transform: none; opacity: 0; }
+    }
+
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 600px; margin: 0 auto 3.5rem;
+      line-height: 1.85;
+    }
+
+    /* Stat cards */
+    .stats-row {
+      display: flex; justify-content: center;
+      gap: 1.25rem; flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      min-width: 135px;
+      text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.09) 0%, transparent 65%);
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent);
+    }
+    .stat-card:hover {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 35px rgba(0,212,255,0.12), 0 8px 32px rgba(0,0,0,0.4);
+      transform: translateY(-3px);
+    }
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2.7rem;
+      font-weight: 500;
+      color: var(--cyan);
+      letter-spacing: -0.05em;
+      line-height: 1;
+      position: relative;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 0.45rem;
+    }
+
+    /* Buttons */
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(123,47,247,0.12));
+      border: 1px solid rgba(0,212,255,0.35);
+      color: var(--cyan); text-decoration: none;
+      padding: 0.85rem 2.2rem; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      transition: all 0.3s;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(123,47,247,0.18));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-primary:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 30px rgba(0,212,255,0.22), 0 0 70px rgba(0,212,255,0.08);
+      transform: translateY(-2px);
+    }
+    .btn-primary:hover::before { opacity: 1; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(200,224,255,0.12);
+      color: var(--muted); text-decoration: none;
+      padding: 0.85rem 2.2rem; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(200,224,255,0.28);
+      color: var(--text);
+      background: rgba(200,224,255,0.04);
+    }
+
+    /* ── Results table ── */
+    .table-shell {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; overflow-x: auto;
+      margin-top: 1.5rem;
+    }
+    .results-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.875rem;
+    }
     .results-table thead th {
-      background: var(--surface2); color: var(--muted); font-weight: 600;
-      text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em;
-      padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+      background: rgba(0,212,255,0.06);
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 1rem 1.2rem; text-align: left;
+      border-bottom: 1px solid var(--border);
     }
-    .results-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
-    .results-table tbody tr:hover { background: var(--surface); }
-    .results-table td { padding: 0.85rem 1rem; vertical-align: middle; }
-    .rank-cell { font-size: 1.2rem; text-align: center; width: 52px; }
-    .workflow-name { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.82rem; color: var(--accent2); }
-    .bar-cell { min-width: 140px; }
-    .bar-wrap { background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
-    .bar-label { font-size: 0.78rem; color: var(--text); margin-top: 3px; }
-    .quality-dot {
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: 700;
+    .results-table tbody tr {
+      border-bottom: 1px solid rgba(0,212,255,0.065);
+      transition: background 0.18s;
     }
-    .latency-val { color: var(--muted); font-size: 0.82rem; }
-    .tokens-val { color: var(--muted); font-size: 0.82rem; }
+    .results-table tbody tr:last-child { border-bottom: none; }
+    .results-table tbody tr:hover { background: rgba(0,212,255,0.035); }
+    .results-table td { padding: 0.95rem 1.2rem; vertical-align: middle; }
+
+    .rank-cell { font-size: 1rem; text-align: center; width: 54px; }
+    .wf-name {
+      font-family: var(--mono);
+      font-size: 0.8rem; color: var(--cyan);
+      letter-spacing: 0.02em;
+    }
+
+    .bar-outer {
+      height: 5px; border-radius: 99px;
+      background: rgba(0,212,255,0.08);
+      overflow: hidden; margin-bottom: 5px;
+    }
+    .bar-inner {
+      height: 100%; border-radius: 99px;
+      position: relative; overflow: hidden;
+      transition: width 1.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    .bar-inner::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+      animation: bar-shimmer 2.8s infinite;
+    }
+    @keyframes bar-shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .bar-lbl {
+      font-family: var(--mono);
+      font-size: 0.72rem; color: var(--text);
+    }
+
+    .q-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 46px; height: 36px; border-radius: 8px;
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+      border: 1px solid;
+    }
+
+    .lat-val, .tok-val {
+      font-family: var(--mono);
+      font-size: 0.76rem; color: var(--muted);
+    }
 
     /* ── Findings ── */
-    .findings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+    }
     .finding-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.85rem;
       position: relative; overflow: hidden;
+      transition: all 0.3s;
     }
     .finding-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
     }
-    .finding-card.c1::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
-    .finding-card.c2::before { background: linear-gradient(90deg, #22c55e, #4ade80); }
-    .finding-card.c3::before { background: linear-gradient(90deg, #eab308, #fde047); }
-    .finding-card.c4::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
-    .finding-card .icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
-    .finding-card h3 { color: var(--text); }
-    .finding-card p { font-size: 0.875rem; margin: 0; }
+    .finding-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .finding-card:hover { transform: translateY(-4px); }
+    .finding-card:hover::after { opacity: 1; }
+
+    .fc-a::before { background: linear-gradient(90deg, var(--cyan), transparent 60%); }
+    .fc-a::after  { background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.07), transparent 65%); }
+    .fc-a:hover   { border-color: rgba(0,212,255,0.38); box-shadow: 0 4px 40px rgba(0,212,255,0.1); }
+
+    .fc-b::before { background: linear-gradient(90deg, var(--violet), transparent 60%); }
+    .fc-b::after  { background: radial-gradient(ellipse at 50% 0%, rgba(123,47,247,0.08), transparent 65%); }
+    .fc-b:hover   { border-color: rgba(123,47,247,0.38); box-shadow: 0 4px 40px rgba(123,47,247,0.1); }
+
+    .fc-c::before { background: linear-gradient(90deg, var(--green), transparent 60%); }
+    .fc-c::after  { background: radial-gradient(ellipse at 50% 0%, rgba(0,255,163,0.07), transparent 65%); }
+    .fc-c:hover   { border-color: rgba(0,255,163,0.38); box-shadow: 0 4px 40px rgba(0,255,163,0.1); }
+
+    .fc-d::before { background: linear-gradient(90deg, var(--pink), transparent 60%); }
+    .fc-d::after  { background: radial-gradient(ellipse at 50% 0%, rgba(255,0,110,0.08), transparent 65%); }
+    .fc-d:hover   { border-color: rgba(255,0,110,0.38); box-shadow: 0 4px 40px rgba(255,0,110,0.1); }
+
+    .finding-icon { font-size: 2rem; margin-bottom: 1rem; display: block; position: relative; z-index: 1; }
+    .finding-card h3 { font-size: 0.95rem; color: var(--text); position: relative; z-index: 1; }
+    .finding-card p  { font-size: 0.84rem; margin: 0.5rem 0 0; position: relative; z-index: 1; }
 
     /* ── Plots ── */
-    .plots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 1.5rem; }
+    .plots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(490px, 1fr));
+      gap: 1.5rem;
+    }
     .plot-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .plot-card:hover {
+      border-color: rgba(0,212,255,0.28);
+      box-shadow: 0 0 35px rgba(0,212,255,0.07), 0 8px 40px rgba(0,0,0,0.35);
+      transform: translateY(-3px);
     }
     .plot-card img { width: 100%; display: block; }
-    .plot-card figcaption { padding: 0.85rem 1rem; font-size: 0.8rem; color: var(--muted); }
+    .plot-cap {
+      padding: 0.85rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem; color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
 
-    /* ── Workflow Cards ── */
-    .workflows-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
-    .wf-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    /* ── Levels ── */
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin-bottom: 2.5rem;
+    }
+    .level-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+    .level-card:hover { transform: translateY(-2px); border-color: var(--border-hi); }
+    .lbadge {
+      display: inline-block;
+      padding: 0.22rem 0.7rem; border-radius: 7px;
+      font-family: var(--mono); font-size: 0.68rem;
+      font-weight: 600; letter-spacing: 0.07em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .lb1 { background: rgba(0,212,255,0.1);  color: var(--cyan);   border: 1px solid rgba(0,212,255,0.2); }
+    .lb2 { background: rgba(0,255,163,0.09); color: var(--green);  border: 1px solid rgba(0,255,163,0.2); }
+    .lb3 { background: rgba(255,184,0,0.09); color: var(--amber);  border: 1px solid rgba(255,184,0,0.2); }
+    .lb4 { background: rgba(255,0,110,0.09); color: var(--pink);   border: 1px solid rgba(255,0,110,0.2); }
+    .level-card h3 { font-size: 0.88rem; color: var(--text); margin-bottom: 0.35rem; }
+    .level-card p  { font-size: 0.8rem; margin: 0; font-style: italic; }
+
+    /* ── Patterns ── */
+    .patterns-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1rem;
+    }
+    .pattern-card {
       display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: all 0.3s;
     }
-    .wf-num {
-      min-width: 32px; height: 32px; background: var(--surface2);
-      border: 1px solid var(--border); border-radius: 6px;
+    .pattern-card:hover {
+      border-color: rgba(0,212,255,0.28);
+      background: rgba(0,212,255,0.04);
+      box-shadow: 0 0 20px rgba(0,212,255,0.05);
+      transform: translateX(4px);
+    }
+    .p-num {
+      min-width: 36px; height: 36px;
+      background: rgba(0,212,255,0.07);
+      border: 1px solid rgba(0,212,255,0.18);
+      border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; font-weight: 700; color: var(--accent2);
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+      color: var(--cyan); flex-shrink: 0;
+      transition: all 0.3s;
     }
-    .wf-card h3 { font-size: 0.9rem; color: var(--text); }
-    .wf-card p { font-size: 0.82rem; margin: 0; }
+    .pattern-card:hover .p-num {
+      background: rgba(0,212,255,0.14);
+      box-shadow: 0 0 12px rgba(0,212,255,0.25);
+    }
+    .pattern-card h3 { font-size: 0.9rem; color: var(--text); }
+    .pattern-card p  { font-size: 0.82rem; margin: 0; line-height: 1.55; }
 
     /* ── Recommendations ── */
+    .rec-shell {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; overflow-x: auto;
+      margin-top: 1.5rem;
+    }
     .rec-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
     .rec-table thead th {
-      background: var(--surface2); color: var(--muted); font-weight: 600;
-      text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.06em;
-      padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+      background: rgba(0,212,255,0.06);
+      color: var(--cyan); font-family: var(--mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.9rem 1.2rem; text-align: left;
+      border-bottom: 1px solid var(--border);
     }
-    .rec-table tbody tr { border-bottom: 1px solid var(--border); }
-    .rec-table tbody tr:hover { background: var(--surface); }
-    .rec-table td { padding: 0.85rem 1rem; }
-    .rec-table td:nth-child(2) { font-family: "SF Mono","Fira Code",monospace; color: var(--accent2); font-size: 0.82rem; }
+    .rec-table tbody tr { border-bottom: 1px solid rgba(0,212,255,0.065); }
+    .rec-table tbody tr:last-child { border-bottom: none; }
+    .rec-table tbody tr:hover { background: rgba(0,212,255,0.03); }
+    .rec-table td { padding: 0.9rem 1.2rem; }
+    .rec-table td:nth-child(2) { font-family: var(--mono); color: var(--cyan); font-size: 0.8rem; }
     .rec-table td:nth-child(3) { color: var(--muted); font-size: 0.82rem; }
 
-    /* ── Setup ── */
-    pre {
-      background: var(--code-bg); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; overflow-x: auto;
-      font-family: "SF Mono","Fira Code",monospace; font-size: 0.82rem;
-      line-height: 1.7; color: #c9d1d9;
+    /* ── Terminal ── */
+    .terminal {
+      background: #020407;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; margin-top: 1.5rem;
     }
-    pre .comment { color: #8b949e; }
-    pre .cmd { color: #79c0ff; }
-    pre .str { color: #a5d6ff; }
-
-    /* ── Task levels ── */
-    .levels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .level-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem;
+    .terminal-bar {
+      background: rgba(0,212,255,0.05);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.2rem;
+      display: flex; align-items: center; gap: 0.5rem;
     }
-    .level-badge {
-      display: inline-block; padding: 0.2rem 0.6rem;
-      border-radius: 6px; font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 0.04em; margin-bottom: 0.6rem;
+    .tdb { width: 11px; height: 11px; border-radius: 50%; }
+    .tdb-r { background: #ff5f57; }
+    .tdb-y { background: #febc2e; }
+    .tdb-g { background: #28c840; }
+    .terminal-title {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--muted); margin-left: 0.5rem; letter-spacing: 0.04em;
     }
-    .l1 { background: rgba(99,102,241,.2); color: #818cf8; }
-    .l2 { background: rgba(34,197,94,.15); color: #4ade80; }
-    .l3 { background: rgba(234,179,8,.15); color: #fde047; }
-    .l4 { background: rgba(239,68,68,.15); color: #f87171; }
-    .level-card h3 { font-size: 0.88rem; }
-    .level-card p { font-size: 0.8rem; margin: 0; font-style: italic; }
+    .terminal-body {
+      padding: 1.75rem 2rem;
+      font-family: var(--mono); font-size: 0.81rem;
+      line-height: 2; color: #8baac0;
+      overflow-x: auto;
+    }
+    .tc { color: #3a5165; }       /* comment */
+    .tk { color: var(--cyan); }   /* keyword / command */
+    .ts { color: var(--green); }  /* string */
+    .tf { color: #9b59f7; }       /* flag */
+    .tp { color: #3a5165; user-select: none; } /* prompt */
 
     /* ── Footer ── */
     footer {
-      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
-      text-align: center; color: var(--muted); font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      padding: 2.75rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      position: relative;
     }
-    footer a { color: var(--accent2); text-decoration: none; }
+    .footer-glow-line {
+      position: absolute; top: -1px;
+      left: 50%; transform: translateX(-50%);
+      width: 180px; height: 1px;
+      background: var(--cyan);
+      box-shadow: 0 0 20px var(--cyan), 0 0 50px rgba(0,212,255,0.4);
+    }
+    footer a { color: var(--cyan); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
 
-    /* ── Divider ── */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+    /* ── Fade-up ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .au   { animation: fade-up 0.65s ease both; }
+    .au-1 { animation-delay: 0.08s; }
+    .au-2 { animation-delay: 0.18s; }
+    .au-3 { animation-delay: 0.28s; }
+    .au-4 { animation-delay: 0.38s; }
+
+    /* inline code */
+    code {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--cyan);
+      background: rgba(0,212,255,0.08);
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
 
     /* ── Responsive ── */
-    @media (max-width: 640px) {
-      nav .links { display: none; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
       .plots-grid { grid-template-columns: 1fr; }
-      .results-table .bar-cell, .results-table .latency-val, .results-table .tokens-val { display: none; }
+      .stats-row { gap: 0.9rem; }
+      .stat-card { min-width: 120px; padding: 1.25rem 1.4rem; }
+      .stat-num  { font-size: 2.1rem; }
+    }
+    @media (max-width: 580px) {
+      .lat-val, .tok-val { display: none; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── Animated neural network canvas ── -->
+<canvas id="neural-bg"></canvas>
+
 <!-- ── Nav ── -->
 <nav>
-  <div class="logo">⚙ Agent Workflow Benchmark</div>
-  <div class="links">
+  <div class="nav-left">
+    <a class="nav-logo" href="#">
+      <div class="logo-hex">⬡</div>
+      <span>Agent Workflow Benchmark</span>
+    </a>
+    <span class="live-badge"><span class="live-dot"></span>Live</span>
+  </div>
+  <div class="nav-links">
     <a href="#results">Results</a>
     <a href="#findings">Findings</a>
+    <a href="#plots">Charts</a>
     <a href="#patterns">Patterns</a>
     <a href="#setup">Setup</a>
   </div>
@@ -241,283 +722,520 @@
   </a>
 </nav>
 
-<!-- ── Hero ── -->
-<section id="hero">
-  <div class="eyebrow">Open-Source Benchmark</div>
-  <h1>10 AI Agent Workflow Patterns,<br>Head-to-Head</h1>
-  <p class="subtitle">A controlled experiment measuring completion rate, answer quality, tool accuracy, and latency across every major agentic architecture — on the same dataset, with the same LLM.</p>
-  <div class="stats-row">
-    <div class="stat-pill"><div class="num">10</div><div class="label">Workflows</div></div>
-    <div class="stat-pill"><div class="num">25</div><div class="label">Tasks</div></div>
-    <div class="stat-pill"><div class="num">250</div><div class="label">Total Runs</div></div>
-    <div class="stat-pill"><div class="num">4</div><div class="label">Task Levels</div></div>
-  </div>
-  <div class="hero-btns">
-    <a class="btn-primary" href="#results">See Results ↓</a>
-    <a class="btn-ghost" href="https://github.com/surabhi7pradhan/agent-workflow-analysis" target="_blank">View on GitHub</a>
-  </div>
-</section>
+<main>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-badge au">
+        <span class="badge-dot"></span>
+        Open-Source Benchmark
+      </div>
+
+      <h1 class="au au-1">
+        <span class="glitch-wrap" data-text="10 AI Agent">10 AI Agent</span><br>
+        <span class="gradient-text">Workflow Patterns</span><br>
+        Head-to-Head
+      </h1>
+
+      <p class="hero-sub au au-2">
+        A controlled experiment measuring completion rate, answer quality,
+        tool accuracy, and latency across every major agentic architecture —
+        on the same dataset, with the same LLM.
+      </p>
+
+      <div class="stats-row au au-3">
+        <div class="stat-card">
+          <div class="stat-num" data-count="10">10</div>
+          <div class="stat-label">Workflows</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="25">25</div>
+          <div class="stat-label">Tasks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="250">250</div>
+          <div class="stat-label">Total Runs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-count="4">4</div>
+          <div class="stat-label">Task Levels</div>
+        </div>
+      </div>
+
+      <div class="hero-btns au au-4">
+        <a class="btn-primary" href="#results">See Results →</a>
+        <a class="btn-ghost" href="https://github.com/surabhi7pradhan/agent-workflow-analysis" target="_blank">View on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Results ── -->
+  <section id="results">
+    <div class="container">
+      <div class="section-label">Benchmark Output</div>
+      <h2>Results</h2>
+      <p>Ranked by composite score (success rate, quality, tool accuracy). Run with <code>llama3.1:8b</code> via Ollama on a local M1 Pro 16 GB.</p>
+
+      <div class="table-shell">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th style="width:54px">#</th>
+              <th>Workflow</th>
+              <th style="min-width:155px">Completion</th>
+              <th>Quality</th>
+              <th class="lat-val">Latency</th>
+              <th class="tok-val">Tokens</th>
+              <th style="min-width:145px">Tool Acc.</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:1rem;font-size:0.75rem;font-family:var(--mono)">
+        <span style="color:var(--cyan)">completion</span> = non-empty answer &nbsp;·&nbsp;
+        <span style="color:var(--cyan)">quality</span> = LLM-as-judge 0–1 vs ground truth &nbsp;·&nbsp;
+        <span style="color:var(--cyan)">tool acc</span> = fraction of successful tool calls
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Findings ── -->
+  <section id="findings">
+    <div class="container">
+      <div class="section-label">Analysis</div>
+      <h2>Key Findings</h2>
+      <div class="findings-grid">
+        <div class="finding-card fc-a">
+          <span class="finding-icon">⚡</span>
+          <h3>tool_using was fastest</h3>
+          <p>At 13,581 ms avg, the ReAct loop was 7× faster than evaluator-optimizer. Single-pass patterns have a natural latency edge.</p>
+        </div>
+        <div class="finding-card fc-b">
+          <span class="finding-icon">🎯</span>
+          <h3>human_in_loop had highest quality</h3>
+          <p>Score 0.836 — but only 44% completion. Human checkpoints filter out poor answers. Quality and coverage trade off sharply.</p>
+        </div>
+        <div class="finding-card fc-c">
+          <span class="finding-icon">🪙</span>
+          <h3>single_step was most token-efficient</h3>
+          <p>438 tokens avg — 8× cheaper than evaluator-optimizer. A well-prompted single call often beats complex pipelines on L1/L2.</p>
+        </div>
+        <div class="finding-card fc-d">
+          <span class="finding-icon">📈</span>
+          <h3>Complexity helps on hard tasks</h3>
+          <p>Simple patterns close the gap on L1/L2. On L3/L4 reasoning and decision tasks, multi-agent architectures pull ahead on quality.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Visualisations ── -->
+  <section id="plots">
+    <div class="container">
+      <div class="section-label">Visualisations</div>
+      <h2>Charts</h2>
+      <div class="plots-grid">
+        <figure class="plot-card">
+          <img src="assets/success_rate_bar.png" alt="Success rate by workflow" loading="lazy" />
+          <figcaption class="plot-cap">Fig 1 — Completion rate per workflow, sorted low-to-high.</figcaption>
+        </figure>
+        <figure class="plot-card">
+          <img src="assets/radar.png" alt="Multi-metric radar chart" loading="lazy" />
+          <figcaption class="plot-cap">Fig 2 — Spider chart across 7 normalised metrics. Larger area = better overall profile.</figcaption>
+        </figure>
+        <figure class="plot-card">
+          <img src="assets/quality_heatmap.png" alt="Quality heatmap" loading="lazy" />
+          <figcaption class="plot-cap">Fig 3 — Z-score heatmap; green = above average, red = below average.</figcaption>
+        </figure>
+        <figure class="plot-card">
+          <img src="assets/level_breakdown.png" alt="Success by task level" loading="lazy" />
+          <figcaption class="plot-cap">Fig 4 — Per-workflow completion rate at each task difficulty level (L1–L4).</figcaption>
+        </figure>
+        <figure class="plot-card">
+          <img src="assets/latency_tokens.png" alt="Latency vs token cost" loading="lazy" />
+          <figcaption class="plot-cap">Fig 5 — Latency (x) vs token cost (y); bubble size = quality score.</figcaption>
+        </figure>
+        <figure class="plot-card">
+          <img src="assets/cost_efficiency.png" alt="Cost efficiency" loading="lazy" />
+          <figcaption class="plot-cap">Fig 6 — Quality score per 1,000 tokens. Higher = more efficient.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Methodology ── -->
+  <section id="methodology">
+    <div class="container">
+      <div class="section-label">Methodology</div>
+      <h2>How It Works</h2>
+      <p>All 10 workflows share the same LLM, tools, dataset, and judge. The only variable is the workflow architecture.</p>
+
+      <div class="levels-grid">
+        <div class="level-card">
+          <div class="lbadge lb1">L1 · Retrieval</div>
+          <h3>8 tasks</h3>
+          <p>"What is total revenue for Hardware in March 2024?"</p>
+        </div>
+        <div class="level-card">
+          <div class="lbadge lb2">L2 · Analytical</div>
+          <h3>7 tasks</h3>
+          <p>"What is the month-over-month revenue trend for 2024?"</p>
+        </div>
+        <div class="level-card">
+          <div class="lbadge lb3">L3 · Reasoning</div>
+          <h3>5 tasks</h3>
+          <p>"Why did the payment success rate drop in March 2024?"</p>
+        </div>
+        <div class="level-card">
+          <div class="lbadge lb4">L4 · Decision</div>
+          <h3>5 tasks</h3>
+          <p>"Should we raise prices on high-margin products or focus on volume?"</p>
+        </div>
+      </div>
+
+      <p><strong>Dataset:</strong> SQLite business database (customers, orders, products, inventory, payments, revenue) + ChromaDB vector store for policy documents.</p>
+      <p><strong>Tools available:</strong> <code>sql_query</code> · <code>csv_reader</code> · <code>vector_search</code> · <code>calculator</code> · <code>python_analysis</code></p>
+      <p><strong>Judge:</strong> LLM-as-judge scores each answer 0.0–1.0 against ground truth using the same model.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Patterns ── -->
+  <section id="patterns">
+    <div class="container">
+      <div class="section-label">Architecture</div>
+      <h2>The 10 Workflow Patterns</h2>
+      <div class="patterns-grid">
+        <div class="pattern-card"><div class="p-num">01</div><div><h3>Single-step</h3><p>One LLM call. No tools. The baseline for comparison.</p></div></div>
+        <div class="pattern-card"><div class="p-num">02</div><div><h3>Tool-using</h3><p>ReAct loop: model selects and calls tools iteratively until it has enough information.</p></div></div>
+        <div class="pattern-card"><div class="p-num">03</div><div><h3>Chain</h3><p>Four deterministic stages: decompose → retrieve → analyse → synthesise.</p></div></div>
+        <div class="pattern-card"><div class="p-num">04</div><div><h3>Routing</h3><p>A classifier decides which specialist handler to invoke for each task type.</p></div></div>
+        <div class="pattern-card"><div class="p-num">05</div><div><h3>Parallel</h3><p>Multiple independent sub-queries run concurrently via asyncio.gather; results merged.</p></div></div>
+        <div class="pattern-card"><div class="p-num">06</div><div><h3>Orchestrator-workers</h3><p>Central orchestrator fans out to specialised worker agents in parallel.</p></div></div>
+        <div class="pattern-card"><div class="p-num">07</div><div><h3>Evaluator-optimizer</h3><p>Generate → Evaluate → Optimize self-refinement loop with early stopping.</p></div></div>
+        <div class="pattern-card"><div class="p-num">08</div><div><h3>Manager agent</h3><p>Manager supervises specialist sub-agents sequentially with active output review.</p></div></div>
+        <div class="pattern-card"><div class="p-num">09</div><div><h3>Multi-agent handoff</h3><p>Retrieval → Analysis → Synthesis, each step handled by a specialist agent.</p></div></div>
+        <div class="pattern-card"><div class="p-num">10</div><div><h3>Human-in-the-loop</h3><p>Checkpoints pause execution for human approval at plan and answer review stages.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Recommendations ── -->
+  <section id="recommendations">
+    <div class="container">
+      <div class="section-label">Guidance</div>
+      <h2>Pattern Selection Guide</h2>
+      <p>Based on benchmark results — pick the pattern that matches your constraints.</p>
+      <div class="rec-shell">
+        <table class="rec-table">
+          <thead>
+            <tr><th>Situation</th><th>Best pattern</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Simple lookups, low latency budget</td><td>single_step</td><td>Zero overhead, 100% completion</td></tr>
+            <tr><td>Need external data or tools</td><td>tool_using</td><td>ReAct is battle-tested, fastest (13.6 s)</td></tr>
+            <tr><td>Predictable pipeline, auditability required</td><td>chain</td><td>Deterministic stages, easy to debug</td></tr>
+            <tr><td>Mixed task types in one system</td><td>routing</td><td>Avoids one-size-fits-all cost</td></tr>
+            <tr><td>Parallel data gathering</td><td>parallel</td><td>asyncio.gather saves wall-clock time</td></tr>
+            <tr><td>Complex L3/L4 tasks</td><td>orchestrator-workers / multi-agent handoff</td><td>Specialisation helps on hard tasks</td></tr>
+            <tr><td>Quality is paramount, latency is flexible</td><td>evaluator_optimizer</td><td>Self-refinement raises the quality ceiling</td></tr>
+            <tr><td>High-stakes decisions</td><td>human_in_loop</td><td>Highest quality (0.836); humans catch edge cases</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Setup ── -->
+  <section id="setup">
+    <div class="container">
+      <div class="section-label">Quickstart</div>
+      <h2>Get Started</h2>
+      <p>Run the full benchmark locally in minutes.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="tdb tdb-r"></span>
+          <span class="tdb tdb-y"></span>
+          <span class="tdb tdb-g"></span>
+          <span class="terminal-title">bash — agent-workflow-analysis</span>
+        </div>
+        <div class="terminal-body">
+<span class="tc"># Clone and install</span>
+<span class="tp">$ </span><span class="tk">git clone</span> https://github.com/surabhi7pradhan/agent-workflow-analysis
+<span class="tp">$ </span><span class="tk">cd</span> agent-workflow-analysis
+<span class="tp">$ </span><span class="tk">python -m venv</span> .venv <span class="tf">&amp;&amp;</span> <span class="tk">source</span> .venv/bin/activate
+<span class="tp">$ </span><span class="tk">pip install</span> <span class="ts">-e ".[dev]"</span>
+
+<span class="tc"># Configure (Ollama recommended — no API key needed)</span>
+<span class="tp">$ </span><span class="tk">cp</span> .env.example .env
+<span class="tc"># Set LLM_PROVIDER=ollama, LLM_MODEL=llama3.1:8b in .env</span>
+<span class="tp">$ </span><span class="tk">ollama pull</span> llama3.1:8b
+
+<span class="tc"># Run the full benchmark (10 workflows × 25 tasks = 250 runs)</span>
+<span class="tp">$ </span><span class="tk">python -m scripts.cli</span> run
+
+<span class="tc"># Generate plots, analysis report, and blog post</span>
+<span class="tp">$ </span><span class="tk">python -m scripts.cli</span> plot
+<span class="tp">$ </span><span class="tk">python -m scripts.cli</span> analyze
+<span class="tp">$ </span><span class="tk">python -m scripts.cli</span> blog
+        </div>
+      </div>
+
+      <p style="margin-top:1.5rem">Supports <strong>Ollama</strong> (local), <strong>Anthropic</strong>, <strong>OpenAI</strong>, and <strong>Groq</strong> — swappable via a single config key.</p>
+    </div>
+  </section>
+
+</main>
 
 <hr class="divider" />
 
-<!-- ── Results ── -->
-<section id="results">
-  <h2>Benchmark Results</h2>
-  <p>Ranked by composite score (success rate, quality, tool accuracy). Run with <code style="color:var(--accent2);background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.82rem">llama3.1:8b</code> via Ollama on a local M1 Pro 16 GB.</p>
-
-  <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)">
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th style="width:52px">Rank</th>
-          <th>Workflow</th>
-          <th>Completion</th>
-          <th>Quality</th>
-          <th class="latency-val">Latency</th>
-          <th class="tokens-val">Tokens</th>
-          <th class="bar-cell">Tool Acc.</th>
-        </tr>
-      </thead>
-      <tbody id="results-body"></tbody>
-    </table>
-  </div>
-  <p style="margin-top:1rem;font-size:0.78rem">
-    <strong>Completion</strong> = workflow produced a non-empty answer. &nbsp;
-    <strong>Quality</strong> = LLM-as-judge score 0–1 against ground truth. &nbsp;
-    <strong>Tool Acc.</strong> = fraction of tool calls that succeeded.
-  </p>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Findings ── -->
-<section id="findings">
-  <h2>Stand-out Findings</h2>
-  <div class="findings-grid">
-    <div class="finding-card c1">
-      <div class="icon">⚡</div>
-      <h3>tool_using was fastest</h3>
-      <p>At 13,581 ms avg, the ReAct loop was 7× faster than evaluator-optimizer. Single-pass patterns have a natural latency edge.</p>
-    </div>
-    <div class="finding-card c2">
-      <div class="icon">🎯</div>
-      <h3>human_in_loop had highest quality</h3>
-      <p>Score 0.836 — but only 44% completion. Human checkpoints filter out poor answers before they're returned. Quality and coverage trade off.</p>
-    </div>
-    <div class="finding-card c3">
-      <div class="icon">🪙</div>
-      <h3>single_step was most token-efficient</h3>
-      <p>438 tokens avg — 8× cheaper than evaluator-optimizer. A well-prompted single LLM call often beats complex pipelines on L1/L2 tasks.</p>
-    </div>
-    <div class="finding-card c4">
-      <div class="icon">📈</div>
-      <h3>Complexity helps on hard tasks</h3>
-      <p>Simple patterns close the gap on L1/L2. On L3/L4 reasoning and decision tasks, multi-agent architectures pull ahead on quality.</p>
-    </div>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Visualisations ── -->
-<section id="plots">
-  <h2>Visualisations</h2>
-  <div class="plots-grid">
-    <figure class="plot-card">
-      <img src="assets/success_rate_bar.png" alt="Success rate by workflow" loading="lazy" />
-      <figcaption>Fig 1 — Completion rate per workflow, sorted low-to-high.</figcaption>
-    </figure>
-    <figure class="plot-card">
-      <img src="assets/radar.png" alt="Multi-metric radar chart" loading="lazy" />
-      <figcaption>Fig 2 — Spider chart across 7 normalised metrics. Larger area = better overall profile.</figcaption>
-    </figure>
-    <figure class="plot-card">
-      <img src="assets/quality_heatmap.png" alt="Quality heatmap" loading="lazy" />
-      <figcaption>Fig 3 — Z-score heatmap; green = above average, red = below average.</figcaption>
-    </figure>
-    <figure class="plot-card">
-      <img src="assets/level_breakdown.png" alt="Success by task level" loading="lazy" />
-      <figcaption>Fig 4 — Per-workflow completion rate at each task difficulty level (L1–L4).</figcaption>
-    </figure>
-    <figure class="plot-card">
-      <img src="assets/latency_tokens.png" alt="Latency vs token cost" loading="lazy" />
-      <figcaption>Fig 5 — Latency (x) vs token cost (y); bubble size = quality score.</figcaption>
-    </figure>
-    <figure class="plot-card">
-      <img src="assets/cost_efficiency.png" alt="Cost efficiency" loading="lazy" />
-      <figcaption>Fig 6 — Quality score per 1,000 tokens. Higher = more efficient.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Methodology ── -->
-<section id="methodology">
-  <h2>Methodology</h2>
-  <p>All 10 workflows share the same LLM, tools, dataset, and judge. The only variable is the workflow architecture.</p>
-
-  <div class="levels-grid">
-    <div class="level-card">
-      <div class="level-badge l1">L1 · Retrieval</div>
-      <h3>8 tasks</h3>
-      <p>"What is total revenue for Hardware in March 2024?"</p>
-    </div>
-    <div class="level-card">
-      <div class="level-badge l2">L2 · Analytical</div>
-      <h3>7 tasks</h3>
-      <p>"What is the month-over-month revenue trend for 2024?"</p>
-    </div>
-    <div class="level-card">
-      <div class="level-badge l3">L3 · Reasoning</div>
-      <h3>5 tasks</h3>
-      <p>"Why did the payment success rate drop in March 2024?"</p>
-    </div>
-    <div class="level-card">
-      <div class="level-badge l4">L4 · Decision</div>
-      <h3>5 tasks</h3>
-      <p>"Should we raise prices on high-margin products or focus on volume?"</p>
-    </div>
-  </div>
-
-  <p><strong>Dataset:</strong> SQLite business database (customers, orders, products, inventory, payments, revenue) + ChromaDB vector store for policy documents.</p>
-  <p><strong>Tools available:</strong> sql_query · csv_reader · vector_search · calculator · python_analysis</p>
-  <p><strong>Judge:</strong> LLM-as-judge scores each answer 0.0–1.0 against ground truth using the same model.</p>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Patterns ── -->
-<section id="patterns">
-  <h2>The 10 Workflow Patterns</h2>
-  <div class="workflows-grid">
-    <div class="wf-card"><div class="wf-num">1</div><div><h3>Single-step</h3><p>One LLM call. No tools. The baseline.</p></div></div>
-    <div class="wf-card"><div class="wf-num">2</div><div><h3>Tool-using</h3><p>ReAct loop: model selects and calls tools iteratively until it has enough information.</p></div></div>
-    <div class="wf-card"><div class="wf-num">3</div><div><h3>Chain</h3><p>Four deterministic stages: decompose → retrieve → analyse → synthesise.</p></div></div>
-    <div class="wf-card"><div class="wf-num">4</div><div><h3>Routing</h3><p>A classifier decides which specialist handler to invoke for each task type.</p></div></div>
-    <div class="wf-card"><div class="wf-num">5</div><div><h3>Parallel</h3><p>Multiple independent sub-queries run concurrently via asyncio.gather; results merged.</p></div></div>
-    <div class="wf-card"><div class="wf-num">6</div><div><h3>Orchestrator-workers</h3><p>Central orchestrator fans out to specialised worker agents in parallel.</p></div></div>
-    <div class="wf-card"><div class="wf-num">7</div><div><h3>Evaluator-optimizer</h3><p>Generate → Evaluate → Optimize self-refinement loop with early stopping.</p></div></div>
-    <div class="wf-card"><div class="wf-num">8</div><div><h3>Manager agent</h3><p>Manager supervises specialist sub-agents sequentially with active output review.</p></div></div>
-    <div class="wf-card"><div class="wf-num">9</div><div><h3>Multi-agent handoff</h3><p>Retrieval → Analysis → Synthesis, each step handled by a specialist agent.</p></div></div>
-    <div class="wf-card"><div class="wf-num">10</div><div><h3>Human-in-the-loop</h3><p>Checkpoints pause execution for human approval at plan and answer review stages.</p></div></div>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Recommendations ── -->
-<section id="recommendations">
-  <h2>Pattern Selection Guide</h2>
-  <p>Based on benchmark results — pick the pattern that matches your constraints.</p>
-  <div style="overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)">
-    <table class="rec-table">
-      <thead>
-        <tr><th>Situation</th><th>Best pattern</th><th>Why</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Simple lookups, low latency budget</td><td>single_step</td><td>Zero overhead, 100% completion</td></tr>
-        <tr><td>Need external data or tools</td><td>tool_using</td><td>ReAct is battle-tested, fastest (13,581 ms)</td></tr>
-        <tr><td>Predictable pipeline, auditability required</td><td>chain</td><td>Deterministic stages, easy to debug</td></tr>
-        <tr><td>Mixed task types in one system</td><td>routing</td><td>Avoids one-size-fits-all cost</td></tr>
-        <tr><td>Parallel data gathering</td><td>parallel</td><td>asyncio.gather saves wall-clock time</td></tr>
-        <tr><td>Complex L3/L4 tasks</td><td>orchestrator-workers / multi-agent handoff</td><td>Specialisation helps on hard tasks</td></tr>
-        <tr><td>Quality is paramount, latency is flexible</td><td>evaluator_optimizer</td><td>Self-refinement raises the quality ceiling</td></tr>
-        <tr><td>High-stakes decisions</td><td>human_in_loop</td><td>Highest quality (0.836); humans catch edge cases</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Setup ── -->
-<section id="setup">
-  <h2>Get Started</h2>
-  <p>Run the full benchmark locally in minutes.</p>
-<pre><span class="comment"># Clone and install</span>
-git clone https://github.com/surabhi7pradhan/agent-workflow-analysis
-cd agent-workflow-analysis
-python -m venv .venv && source .venv/bin/activate
-pip install -e <span class="str">".[dev]"</span>
-
-<span class="comment"># Configure (Ollama recommended — no API key needed)</span>
-cp .env.example .env
-<span class="comment"># Set LLM_PROVIDER=ollama, LLM_MODEL=llama3.1:8b in .env</span>
-ollama pull llama3.1:8b
-
-<span class="comment"># Run the full benchmark</span>
-python -m scripts.cli run
-
-<span class="comment"># Generate plots, analysis, and blog post</span>
-python -m scripts.cli plot
-python -m scripts.cli analyze
-python -m scripts.cli blog</pre>
-
-  <p style="margin-top:1.5rem">Supports <strong>Ollama</strong> (local), <strong>Anthropic</strong>, <strong>OpenAI</strong>, and <strong>Groq</strong> — swappable via a single config key.</p>
-</section>
-
-<hr class="divider" />
-
-<!-- ── Footer ── -->
 <footer>
-  <p>Built by <a href="https://github.com/surabhi7pradhan">Surabhi Pradhan</a> · <a href="https://github.com/surabhi7pradhan/agent-workflow-analysis">GitHub Repository</a></p>
-  <p style="margin-top:0.5rem">Benchmark run with llama3.1:8b via Ollama · 250 runs · April 2026</p>
+  <div class="footer-glow-line"></div>
+  <p>Built by <a href="https://github.com/surabhi7pradhan">Surabhi Pradhan</a> &nbsp;·&nbsp; <a href="https://github.com/surabhi7pradhan/agent-workflow-analysis">GitHub Repository</a></p>
+  <p style="margin-top:0.45rem;font-family:var(--mono);font-size:0.72rem;opacity:0.45">llama3.1:8b via Ollama &nbsp;·&nbsp; 250 runs &nbsp;·&nbsp; April 2026</p>
 </footer>
 
+<!-- ══════════════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════════════ -->
 <script>
-  const data = [
-    { rank: "🥇", name: "tool_using",           success: 100, quality: 0.572, latency: 13581,  tokens: 1086, toolAcc: 60.0 },
-    { rank: "🥈", name: "parallel",             success: 100, quality: 0.696, latency: 30362,  tokens: 1219, toolAcc: 25.0 },
-    { rank: "🥉", name: "single_step",          success: 100, quality: 0.748, latency: 23089,  tokens: 438,  toolAcc: 0.0  },
-    { rank: "4",  name: "routing",              success: 100, quality: 0.484, latency: 24310,  tokens: 853,  toolAcc: 4.2  },
-    { rank: "5",  name: "evaluator_optimizer",  success: 100, quality: 0.720, latency: 93872,  tokens: 3575, toolAcc: 21.4 },
-    { rank: "6",  name: "multi_agent_handoff",  success: 84,  quality: 0.729, latency: 48107,  tokens: 3480, toolAcc: 77.4 },
-    { rank: "7",  name: "manager_agent",        success: 80,  quality: 0.550, latency: 36946,  tokens: 1399, toolAcc: 1.6  },
-    { rank: "8",  name: "orchestrator_workers", success: 64,  quality: 0.637, latency: 25417,  tokens: 871,  toolAcc: 0.0  },
-    { rank: "9",  name: "chain",                success: 56,  quality: 0.700, latency: 52137,  tokens: 3233, toolAcc: 23.6 },
-    { rank: "10", name: "human_in_loop",        success: 44,  quality: 0.836, latency: 23978,  tokens: 1460, toolAcc: 22.0 },
-  ];
+// ── 1. Neural network canvas ───────────────────────────────────────
+(function () {
+  const canvas = document.getElementById('neural-bg');
+  const ctx    = canvas.getContext('2d');
 
-  function successColor(v) {
-    if (v === 100) return "#22c55e";
-    if (v >= 80)  return "#84cc16";
-    if (v >= 60)  return "#eab308";
-    return "#ef4444";
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Node palette: 60% cyan, 25% violet, 15% pink
+  const PALETTE = ['#00d4ff','#00d4ff','#00d4ff','#7b2ff7','#ff006e'];
+  const NODE_COUNT   = 78;
+  const MAX_CONN     = 155;   // px — max distance for a connection line
+  const STREAM_COUNT = 18;
+
+  // Nodes
+  const nodes = Array.from({ length: NODE_COUNT }, () => ({
+    x:     Math.random() * canvas.width,
+    y:     Math.random() * canvas.height,
+    vx:    (Math.random() - 0.5) * 0.32,
+    vy:    (Math.random() - 0.5) * 0.32,
+    r:     Math.random() * 1.6 + 0.7,
+    phase: Math.random() * Math.PI * 2,
+    color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+  }));
+
+  // Data stream particles (green, float upward)
+  const streams = Array.from({ length: STREAM_COUNT }, () => spawnStream());
+
+  function spawnStream() {
+    return {
+      x:       Math.random() * (canvas.width || 1400),
+      y:       canvas.height + 20,
+      vx:      (Math.random() - 0.5) * 1.1,
+      vy:      -(Math.random() * 0.9 + 0.35),
+      life:    0,
+      maxLife: 0.45 + Math.random() * 0.55,
+    };
   }
 
-  function qualityColor(v) {
-    if (v >= 0.75) return { bg: "rgba(34,197,94,.18)", fg: "#4ade80" };
-    if (v >= 0.60) return { bg: "rgba(234,179,8,.15)", fg: "#fde047" };
-    return { bg: "rgba(148,163,184,.12)", fg: "#94a3b8" };
-  }
+  // Pre-compute color channel values for glow without regex each frame
+  const channelMap = {
+    '#00d4ff': '0,212,255',
+    '#7b2ff7': '123,47,247',
+    '#ff006e': '255,0,110',
+  };
 
-  function fmtLatency(ms) {
-    return ms >= 1000 ? (ms / 1000).toFixed(1) + "s" : ms + "ms";
-  }
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const t = Date.now() * 0.001;
 
-  const tbody = document.getElementById("results-body");
-  data.forEach(r => {
-    const qc = qualityColor(r.quality);
-    tbody.innerHTML += `
-      <tr>
-        <td class="rank-cell">${r.rank}</td>
-        <td><span class="workflow-name">${r.name}</span></td>
-        <td class="bar-cell">
-          <div class="bar-wrap"><div class="bar-fill" style="width:${r.success}%;background:${successColor(r.success)}"></div></div>
-          <div class="bar-label">${r.success}%</div>
-        </td>
-        <td>
-          <div class="quality-dot" style="background:${qc.bg};color:${qc.fg}">${r.quality.toFixed(2)}</div>
-        </td>
-        <td class="latency-val">${fmtLatency(r.latency)}</td>
-        <td class="tokens-val">${r.tokens.toLocaleString()}</td>
-        <td class="bar-cell">
-          <div class="bar-wrap"><div class="bar-fill" style="width:${r.toolAcc}%;background:#6366f1"></div></div>
-          <div class="bar-label">${r.toolAcc}%</div>
-        </td>
-      </tr>`;
+    // — Connections —
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx   = nodes[i].x - nodes[j].x;
+        const dy   = nodes[i].y - nodes[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_CONN) {
+          const a = (1 - dist / MAX_CONN) * 0.22;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = `rgba(0,212,255,${a})`;
+          ctx.lineWidth   = 0.45;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // — Nodes —
+    nodes.forEach(n => {
+      // move
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0)             { n.x = 0;             n.vx *= -1; }
+      if (n.x > canvas.width)  { n.x = canvas.width;  n.vx *= -1; }
+      if (n.y < 0)             { n.y = 0;             n.vy *= -1; }
+      if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
+
+      const pulse = Math.sin(t * 1.4 + n.phase) * 0.5 + 0.5;
+      const ch    = channelMap[n.color] || '0,212,255';
+
+      // soft glow halo
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${ch},${0.03 + pulse * 0.04})`;
+      ctx.fill();
+
+      // core dot
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle   = n.color;
+      ctx.globalAlpha = 0.45 + pulse * 0.55;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+
+    // — Data streams —
+    streams.forEach((s, i) => {
+      s.life += 0.007;
+      if (s.life >= s.maxLife) {
+        streams[i] = spawnStream();
+        return;
+      }
+      s.x += s.vx;
+      s.y += s.vy;
+
+      const progress = s.life / s.maxLife;
+      const alpha    = Math.sin(progress * Math.PI) * 0.55;
+
+      // trail
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - s.vx * 10, s.y - s.vy * 10);
+      ctx.strokeStyle = `rgba(0,255,163,${alpha * 0.4})`;
+      ctx.lineWidth   = 0.9;
+      ctx.stroke();
+
+      // dot
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 1.1, 0, Math.PI * 2);
+      ctx.fillStyle   = `rgba(0,255,163,${alpha})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+
+// ── 2. Results table ───────────────────────────────────────────────
+const RESULTS = [
+  { rank:'🥇', name:'tool_using',           success:100, quality:0.572, latency:13581,  tokens:1086, toolAcc:60.0 },
+  { rank:'🥈', name:'parallel',             success:100, quality:0.696, latency:30362,  tokens:1219, toolAcc:25.0 },
+  { rank:'🥉', name:'single_step',          success:100, quality:0.748, latency:23089,  tokens:438,  toolAcc:0.0  },
+  { rank:'4',  name:'routing',              success:100, quality:0.484, latency:24310,  tokens:853,  toolAcc:4.2  },
+  { rank:'5',  name:'evaluator_optimizer',  success:100, quality:0.720, latency:93872,  tokens:3575, toolAcc:21.4 },
+  { rank:'6',  name:'multi_agent_handoff',  success:84,  quality:0.729, latency:48107,  tokens:3480, toolAcc:77.4 },
+  { rank:'7',  name:'manager_agent',        success:80,  quality:0.550, latency:36946,  tokens:1399, toolAcc:1.6  },
+  { rank:'8',  name:'orchestrator_workers', success:64,  quality:0.637, latency:25417,  tokens:871,  toolAcc:0.0  },
+  { rank:'9',  name:'chain',                success:56,  quality:0.700, latency:52137,  tokens:3233, toolAcc:23.6 },
+  { rank:'10', name:'human_in_loop',        success:44,  quality:0.836, latency:23978,  tokens:1460, toolAcc:22.0 },
+];
+
+function successGrad(v) {
+  if (v === 100) return ['#00ffa3','#00ffa3cc'];
+  if (v >= 80)   return ['#7be99d','#7be99dcc'];
+  if (v >= 60)   return ['#ffb800','#ffb800cc'];
+  return ['#ff3860','#ff3860cc'];
+}
+
+function qualityStyle(v) {
+  if (v >= 0.75) return { bg:'rgba(0,255,163,0.1)',  color:'#00ffa3', bdr:'rgba(0,255,163,0.22)' };
+  if (v >= 0.60) return { bg:'rgba(255,184,0,0.1)',  color:'#ffb800', bdr:'rgba(255,184,0,0.22)'  };
+  return             { bg:'rgba(148,163,184,0.09)', color:'#94a3b8', bdr:'rgba(148,163,184,0.2)'  };
+}
+
+function fmtMs(ms) {
+  return ms >= 1000 ? (ms / 1000).toFixed(1) + ' s' : ms + ' ms';
+}
+
+const tbody = document.getElementById('results-body');
+RESULTS.forEach(r => {
+  const [c1, c2] = successGrad(r.success);
+  const qs       = qualityStyle(r.quality);
+  tbody.innerHTML += `
+    <tr>
+      <td class="rank-cell">${r.rank}</td>
+      <td><span class="wf-name">${r.name}</span></td>
+      <td>
+        <div class="bar-outer">
+          <div class="bar-inner" style="width:${r.success}%;background:linear-gradient(90deg,${c1},${c2})"></div>
+        </div>
+        <span class="bar-lbl" style="color:${c1}">${r.success}%</span>
+      </td>
+      <td>
+        <div class="q-badge" style="background:${qs.bg};color:${qs.color};border-color:${qs.bdr}">
+          ${r.quality.toFixed(2)}
+        </div>
+      </td>
+      <td class="lat-val">${fmtMs(r.latency)}</td>
+      <td class="tok-val">${r.tokens.toLocaleString()}</td>
+      <td>
+        <div class="bar-outer">
+          <div class="bar-inner" style="width:${r.toolAcc}%;background:linear-gradient(90deg,#7b2ff7,#9b59f7)"></div>
+        </div>
+        <span class="bar-lbl" style="color:#9b59f7">${r.toolAcc}%</span>
+      </td>
+    </tr>`;
+});
+
+
+// ── 3. Counter animation (IntersectionObserver) ────────────────────
+function countUp(el, target, ms) {
+  const t0 = performance.now();
+  (function tick(now) {
+    const p   = Math.min((now - t0) / ms, 1);
+    const val = Math.round((1 - Math.pow(1 - p, 3)) * target);
+    el.textContent = val;
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+const cObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      countUp(e.target, parseInt(e.target.dataset.count, 10), 1400);
+      cObs.unobserve(e.target);
+    }
   });
+}, { threshold: 0.6 });
+
+document.querySelectorAll('[data-count]').forEach(el => {
+  el.textContent = '0';
+  cObs.observe(el);
+});
 </script>
+
 </body>
 </html>
