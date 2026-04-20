@@ -12,6 +12,7 @@ data/db/*.db
 data/vectordb/
 results/*.json
 results/*.csv
+results/*.md
 plots/*.png
 plots/*.pdf
 .DS_Store
