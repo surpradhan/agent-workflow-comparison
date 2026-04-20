@@ -16,3 +16,6 @@ results/*.md
 plots/*.png
 plots/*.pdf
 .DS_Store
+CLAUDE.md
+.claude/
+.gitignore
