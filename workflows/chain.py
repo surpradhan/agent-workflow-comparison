@@ -37,7 +37,6 @@ class ChainWorkflow(BaseWorkflow):
         self._dispatcher = ToolDispatcher()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err
@@ -78,7 +77,6 @@ class ChainWorkflow(BaseWorkflow):
             retries += self._llm.last_retries
             plan, parse_ok = _parse_plan(plan_text)
 
-            # Fix 1: surface parse failures in reasoning instead of silently degrading
             if not parse_ok:
                 log.warning("Chain plan parsing failed for task %s — LLM returned non-JSON", task.id)
                 reasoning.append(

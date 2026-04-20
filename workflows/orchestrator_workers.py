@@ -56,7 +56,6 @@ class OrchestratorWorkersWorkflow(BaseWorkflow):
         self._dispatcher = ToolDispatcher()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err
@@ -83,8 +82,6 @@ class OrchestratorWorkersWorkflow(BaseWorkflow):
             retries += self._llm.last_retries
             subtasks, parse_ok = _parse_subtasks(plan_text)
 
-            # Fix 5: fail fast when plan is unparseable or empty — a hallucinated
-            # fallback query produces garbage data and a confidently wrong answer.
             if not parse_ok:
                 log.warning(
                     "Orchestrator plan parsing failed for task %s — aborting", task.id
@@ -229,7 +226,6 @@ class OrchestratorWorkersWorkflow(BaseWorkflow):
                 HumanMessage(content=prompt),
             ]
         )
-        # Fix 1: log worker plan parse failure
         parsed, parse_ok = parse_json(text)
         if not parse_ok:
             log.warning("Worker plan parsing failed for subtask '%s'", task_desc[:60])

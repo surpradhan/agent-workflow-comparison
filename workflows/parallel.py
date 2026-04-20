@@ -23,7 +23,7 @@ from workflows.base import BaseWorkflow, WorkflowResult
 
 log = logging.getLogger(__name__)
 
-_MAX_QUERIES = 4  # Fix 12: hard cap enforced on both planning prompt and execution
+_MAX_QUERIES = 4
 
 _PLAN_SYSTEM = (
     "You are a data analyst. Given a business question, identify ALL independent data queries "
@@ -46,7 +46,6 @@ class ParallelWorkflow(BaseWorkflow):
         self._dispatcher = ToolDispatcher()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err
@@ -70,7 +69,6 @@ class ParallelWorkflow(BaseWorkflow):
             retries += self._llm.last_retries
             plan, parse_ok = _parse_plan(plan_text)
 
-            # Fix 1: log plan parse failures visibly
             if not parse_ok:
                 log.warning("Parallel plan parsing failed for task %s — using fallback query", task.id)
                 reasoning.append(
@@ -81,7 +79,6 @@ class ParallelWorkflow(BaseWorkflow):
                 reasoning.append("WARNING: LLM returned empty query plan — using fallback SQL query")
                 plan = [{"tool": "sql_query", "args": {"query": "SELECT * FROM revenue LIMIT 20"}}]
 
-            # Fix 12: enforce the concurrency cap regardless of LLM output
             if len(plan) > _MAX_QUERIES:
                 reasoning.append(
                     f"WARNING: Plan had {len(plan)} queries, capping to {_MAX_QUERIES}"

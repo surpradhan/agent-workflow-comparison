@@ -27,7 +27,6 @@ class SingleStepWorkflow(BaseWorkflow):
         self._llm = LLMClient()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err

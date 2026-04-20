@@ -18,7 +18,7 @@ import logging
 import re
 import time
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
 from agents.llm_client import LLMClient, extract_text
 from agents.tool_dispatcher import TOOL_SCHEMAS, ToolDispatcher
@@ -124,7 +124,6 @@ class EvaluatorOptimizerWorkflow(BaseWorkflow):
                     break
 
                 # Execute each tool call the model requested.
-                from langchain_core.messages import ToolMessage
                 messages.append(response)
                 for tc in response.tool_calls:
                     tool_name = tc.get("name", "") if isinstance(tc, dict) else tc.name

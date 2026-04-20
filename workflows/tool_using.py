@@ -6,7 +6,7 @@ import time
 
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
-from agents.llm_client import LLMClient, extract_text  # Fix 6: import shared extract_text
+from agents.llm_client import LLMClient, extract_text
 from agents.tool_dispatcher import ToolDispatcher
 from tasks.task_registry import Task
 from workflows.base import BaseWorkflow, WorkflowResult
@@ -20,7 +20,7 @@ _SYSTEM = (
 )
 
 _MAX_ITERATIONS = 10
-_MAX_TOOL_RESULT_CHARS = 3000  # Fix 8: cap individual tool results to bound context growth
+_MAX_TOOL_RESULT_CHARS = 3000
 
 
 class ToolUsingWorkflow(BaseWorkflow):
@@ -34,7 +34,6 @@ class ToolUsingWorkflow(BaseWorkflow):
         self._dispatcher = ToolDispatcher()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task before doing any LLM work
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err
@@ -83,7 +82,6 @@ class ToolUsingWorkflow(BaseWorkflow):
 
                 # Execute all tool calls in this iteration
                 for tc in response.tool_calls:
-                    # Fix 2: use .get() with safe defaults instead of direct key access
                     tool_name = tc.get("name", "")
                     tool_args = tc.get("args", {})
                     tool_id = tc.get("id", "")
@@ -102,7 +100,6 @@ class ToolUsingWorkflow(BaseWorkflow):
                     else:
                         reasoning.append(f"Tool {tool_name} failed: {result.error}")
 
-                    # Fix 8: truncate large tool results before adding to message history
                     tool_text = self._dispatcher.result_to_text(result)
                     if len(tool_text) > _MAX_TOOL_RESULT_CHARS:
                         tool_text = (

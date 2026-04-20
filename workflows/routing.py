@@ -46,7 +46,6 @@ class RoutingWorkflow(BaseWorkflow):
         self._dispatcher = ToolDispatcher()
 
     async def run(self, task: Task) -> WorkflowResult:
-        # Fix 11: validate task
         if err := self._validate_task(task):
             return WorkflowResult(
                 task_id=task.id, workflow_name=self.name, success=False, error=err
@@ -164,7 +163,7 @@ class RoutingWorkflow(BaseWorkflow):
         tokens_total += tokens
         handler_retries += self._llm.last_retries
         reasoning.append("Formatted final answer from query result")
-        handler_ok = tc_ok > 0  # Fix 10: handler reports its own success
+        handler_ok = tc_ok > 0
         return answer_text, handler_ok, reasoning, tools_used, tc_total, tc_ok, tokens_total, handler_retries
 
     async def _handle_analytical(self, task: Task) -> _HandlerResult:
@@ -238,7 +237,7 @@ class RoutingWorkflow(BaseWorkflow):
         tokens_total += tokens
         handler_retries += self._llm.last_retries
         reasoning.append("Synthesized analytical answer")
-        handler_ok = tc_ok > 0  # Fix 10
+        handler_ok = tc_ok > 0
         return answer_text, handler_ok, reasoning, tools_used, tc_total, tc_ok, tokens_total, handler_retries
 
     async def _handle_complex(self, task: Task) -> _HandlerResult:
@@ -246,7 +245,6 @@ class RoutingWorkflow(BaseWorkflow):
         from workflows.tool_using import ToolUsingWorkflow
         reasoning = ["Handler: complex — delegating to full tool-using agent"]
         inner = await ToolUsingWorkflow().run(task)
-        # Fix 10: propagate inner workflow's success flag
         return (
             inner.answer,
             inner.success,
