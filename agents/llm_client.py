@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 # Retry / timeout configuration
 _RETRY_DELAYS = (2.0, 4.0, 8.0)   # seconds between successive retries
-_LLM_TIMEOUT = 180.0               # seconds before a single call is abandoned
+_LLM_TIMEOUT = 180.0               # seconds before a single call is abandoned (generous for local Ollama; Groq is much faster)
 
 # Typed exception classes from provider SDKs — preferred over keyword matching.
 # Guarded by try/except so the module loads even when a provider is not installed.
@@ -132,10 +132,17 @@ def _build_model(model_override: str | None = None) -> Any:
             model=model_name,
             base_url=settings.ollama_base_url,
         )
+    elif settings.llm_provider == "groq":
+        from langchain_groq import ChatGroq
+
+        return ChatGroq(
+            model=model_name,
+            api_key=settings.groq_api_key,
+        )
     else:
         raise ValueError(
             f"Unknown llm_provider '{settings.llm_provider}'. "
-            "Must be 'anthropic', 'openai', or 'ollama'."
+            "Must be 'anthropic', 'openai', 'ollama', or 'groq'."
         )
 
 

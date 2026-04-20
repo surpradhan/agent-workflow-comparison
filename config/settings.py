@@ -12,10 +12,11 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables and .env file."""
 
     # LLM
-    llm_provider: str = Field(default="anthropic", description="anthropic, openai, or ollama")
+    llm_provider: str = Field(default="anthropic", description="anthropic, openai, ollama, or groq")
     llm_model: str = Field(default="claude-sonnet-4-20250514")
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    groq_api_key: str = ""
 
     # Ollama (used when llm_provider="ollama")
     ollama_base_url: str = Field(default="http://localhost:11434", description="Ollama server URL")
