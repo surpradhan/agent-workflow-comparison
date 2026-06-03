@@ -199,7 +199,7 @@ class LLMClient:
                 )
                 self._last_retry_count = attempt  # 0 = no retry needed
                 return result
-            except asyncio.TimeoutError as exc:
+            except TimeoutError as exc:
                 log.warning(
                     "LLM call timed out after %.0fs (attempt %d)", _LLM_TIMEOUT, attempt + 1
                 )

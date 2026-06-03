@@ -172,12 +172,12 @@ class ManagerAgentWorkflow(BaseWorkflow):
                         fb_text = self._dispatcher.result_to_text(fallback_result)[:MAX_TOOL_RESULT_CHARS]
                         if fallback_result.success:
                             tool_calls_successful += 1
-                            reasoning.append(f"  Fallback agent succeeded")
+                            reasoning.append("  Fallback agent succeeded")
                             agent_outputs.append(
                                 f"[{fallback.get('agent', 'fallback')}: {subtask_desc}]\n{fb_text}"
                             )
                         else:
-                            reasoning.append(f"  Fallback agent also failed")
+                            reasoning.append("  Fallback agent also failed")
                             agent_outputs.append(
                                 f"[{agent_name}: {subtask_desc}] ERROR: both primary and fallback failed"
                             )

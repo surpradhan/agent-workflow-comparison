@@ -13,7 +13,6 @@ from langchain_core.messages import AIMessage
 from tasks.task_registry import Task, TaskLevel
 from tools.base import ToolResult
 
-
 # ---------------------------------------------------------------------------
 # Fixtures (shared with test_workflows.py style)
 # ---------------------------------------------------------------------------
@@ -441,6 +440,7 @@ class TestMultiAgentHandoffWorkflow:
             result = await MultiAgentHandoffWorkflow().run(task_l1)
 
         assert result.success is False
+        assert result.error is not None
         assert "LLM API down" in result.error
 
 
@@ -705,7 +705,7 @@ class TestReporter:
         return metrics
 
     def test_composite_score_ordering(self) -> None:
-        from evaluation.reporter import composite_score, rank_workflows
+        from evaluation.reporter import rank_workflows
 
         metrics = self._make_metrics()
         ranked = rank_workflows(metrics)
