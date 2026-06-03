@@ -13,6 +13,7 @@ from langchain_core.messages import AIMessage
 from tasks.task_registry import Task, TaskLevel
 from tools.base import ToolResult
 
+
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -93,7 +94,6 @@ class TestSingleStepWorkflow:
             result = await SingleStepWorkflow().run(task_l1)
 
         assert result.success is False
-        assert result.error is not None
         assert "API error" in result.error
         assert result.latency_ms > 0
 
@@ -745,7 +745,6 @@ class TestToolDispatcher:
         dispatcher = ToolDispatcher()
         result = await dispatcher.dispatch("nonexistent_tool", {})
         assert result.success is False
-        assert result.error is not None
         assert "nonexistent_tool" in result.error
 
     @pytest.mark.asyncio
@@ -814,9 +813,8 @@ class TestRetryBehaviour:
 
     @pytest.mark.asyncio
     async def test_retriable_error_is_retried(self) -> None:
-        from langchain_core.messages import HumanMessage
-
         from agents.llm_client import LLMClient
+        from langchain_core.messages import HumanMessage
 
         client = LLMClient.__new__(LLMClient)  # skip __init__ to avoid real model
 
@@ -839,9 +837,8 @@ class TestRetryBehaviour:
 
     @pytest.mark.asyncio
     async def test_non_retriable_error_is_not_retried(self) -> None:
-        from langchain_core.messages import HumanMessage
-
         from agents.llm_client import LLMClient
+        from langchain_core.messages import HumanMessage
 
         client = LLMClient.__new__(LLMClient)
         call_count = 0
@@ -891,7 +888,9 @@ class TestMaxIterationBailout:
             result = await ToolUsingWorkflow().run(task_l1)
 
         assert result.success is False
-        assert (result.error is not None and "Iteration limit" in result.error) or "Max iterations" in " ".join(result.reasoning_steps)
+        has_iteration_limit_error = result.error is not None and "Iteration limit" in result.error
+        has_max_iterations_in_steps = "Max iterations" in " ".join(result.reasoning_steps)
+        assert has_iteration_limit_error or has_max_iterations_in_steps
         # Should have made exactly _MAX_ITERATIONS LLM calls
         assert MockLLM.return_value.invoke_with_tools.call_count == _MAX_ITERATIONS
 
@@ -984,9 +983,8 @@ class TestRetriesAccumulated:
     @pytest.mark.asyncio
     async def test_llm_client_last_retries_property(self) -> None:
         """LLMClient.last_retries must track the retry count of the last call."""
-        from langchain_core.messages import AIMessage, HumanMessage
-
         from agents.llm_client import LLMClient
+        from langchain_core.messages import AIMessage, HumanMessage
 
         client = LLMClient.__new__(LLMClient)
         call_count = 0
