@@ -888,7 +888,9 @@ class TestMaxIterationBailout:
             result = await ToolUsingWorkflow().run(task_l1)
 
         assert result.success is False
-        assert "Iteration limit" in result.error or "Max iterations" in " ".join(result.reasoning_steps)
+        has_iteration_limit_error = result.error is not None and "Iteration limit" in result.error
+        has_max_iterations_in_steps = "Max iterations" in " ".join(result.reasoning_steps)
+        assert has_iteration_limit_error or has_max_iterations_in_steps
         # Should have made exactly _MAX_ITERATIONS LLM calls
         assert MockLLM.return_value.invoke_with_tools.call_count == _MAX_ITERATIONS
 
