@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tasks import registry, TaskLevel
+from tasks import TaskLevel, registry
 
 
 class TestTaskRegistry:

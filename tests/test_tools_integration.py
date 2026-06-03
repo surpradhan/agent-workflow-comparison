@@ -14,14 +14,10 @@ from __future__ import annotations
 
 import csv
 import sqlite3
-import tempfile
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-from tools.base import ToolResult
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -169,6 +165,7 @@ class TestSQLQueryTool:
         tool = SQLQueryTool(db_path=db_path)
         result = await tool.execute(query="DROP TABLE revenue")
         assert result.success is False
+        assert result.error is not None
         assert "DROP" in result.error
 
     @pytest.mark.asyncio
@@ -178,6 +175,7 @@ class TestSQLQueryTool:
         tool = SQLQueryTool(db_path=db_path)
         result = await tool.execute(query="DELETE FROM customers WHERE id = 1")
         assert result.success is False
+        assert result.error is not None
         assert "DELETE" in result.error
 
     @pytest.mark.asyncio
@@ -246,6 +244,7 @@ class TestCSVReaderTool:
         tool = CSVReaderTool()
         result = await tool.execute(filename="nonexistent")
         assert result.success is False
+        assert result.error is not None
         assert "nonexistent" in result.error
 
     @pytest.mark.asyncio
@@ -257,6 +256,7 @@ class TestCSVReaderTool:
         # "orders" is valid but we didn't create orders.csv in the fixture
         result = await tool.execute(filename="orders")
         assert result.success is False
+        assert result.error is not None
         assert "not found" in result.error.lower()
 
     @pytest.mark.asyncio
@@ -319,6 +319,7 @@ class TestPythonAnalysisTool:
         tool = PythonAnalysisTool()
         result = await tool.execute(code="result = 1 / 0")
         assert result.success is False
+        assert result.error is not None
         assert "division" in result.error.lower() or "zero" in result.error.lower()
 
     @pytest.mark.asyncio

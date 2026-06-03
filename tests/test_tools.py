@@ -8,12 +8,11 @@ import pytest
 # Ensure project root is on the path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.sql_query import SQLQueryTool
-from tools.csv_reader import CSVReaderTool
-from tools.vector_search import VectorSearchTool
 from tools.calculator import CalculatorTool
+from tools.csv_reader import CSVReaderTool
 from tools.python_analysis import PythonAnalysisTool
-
+from tools.sql_query import SQLQueryTool
+from tools.vector_search import VectorSearchTool
 
 # --- SQL Query Tool ---
 

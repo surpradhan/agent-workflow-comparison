@@ -57,7 +57,7 @@ def _safe_eval(node: ast.AST) -> Any:
         if isinstance(node.func, ast.Name) and node.func.id in SAFE_FUNCTIONS:
             args = [_safe_eval(arg) for arg in node.args]
             return SAFE_FUNCTIONS[node.func.id](*args)
-        raise ValueError(f"Unsupported function call")
+        raise ValueError("Unsupported function call")
     raise ValueError(f"Unsupported expression type: {type(node).__name__}")
 
 
