@@ -6,8 +6,8 @@ This is a benchmark tool running in a controlled local environment — not a
 general-purpose sandbox. Do not expose this tool to untrusted user input.
 """
 
-import io
 import contextlib
+import io
 from typing import Any
 
 import pandas as pd

@@ -32,12 +32,21 @@ class VectorSearchTool(BaseTool):
             results = collection.query(query_texts=[query], n_results=n_results)
 
             documents = []
-            for i in range(len(results["ids"][0])):
+            ids_data = results.get("ids") or []
+            ids = ids_data[0] if ids_data else []
+            docs_data = results.get("documents") or []
+            docs_list = docs_data[0] if docs_data else []
+            meta_data = results.get("metadatas") or []
+            metadata_list = meta_data[0] if meta_data else []
+            dist_data = results.get("distances") or []
+            distances = dist_data[0] if dist_data else []
+
+            for i in range(len(ids)):
                 documents.append({
-                    "id": results["ids"][0][i],
-                    "text": results["documents"][0][i],
-                    "metadata": results["metadatas"][0][i],
-                    "distance": results["distances"][0][i] if results["distances"] else None,
+                    "id": ids[i],
+                    "text": docs_list[i],
+                    "metadata": metadata_list[i] if i < len(metadata_list) else {},
+                    "distance": distances[i] if i < len(distances) else None,
                 })
 
             return ToolResult(success=True, data={"query": query, "results": documents})

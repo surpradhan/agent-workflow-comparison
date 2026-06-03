@@ -11,6 +11,11 @@ from tools.base import BaseTool, ToolResult
 # ---------------------------------------------------------------------------
 # OpenAI-compatible tool schemas (used with model.bind_tools())
 # ---------------------------------------------------------------------------
+# NOTE: Schemas are defined separately from tool classes because they specify
+# the UX/API contract for the LLM (parameter names, descriptions, types), which
+# may differ from internal implementation details. Each schema must match the
+# corresponding tool's execute() signature.
+# Validation: ToolDispatcher.__init__ checks that all schema names exist in ALL_TOOLS.
 
 TOOL_SCHEMAS: list[dict[str, Any]] = [
     {
@@ -122,6 +127,19 @@ class ToolDispatcher:
             allowed_tools: Restrict dispatch to these tool names.
                            None means all tools are allowed.
         """
+        # Validate schema consistency: all schema names must exist in ALL_TOOLS
+        schema_names = {s["name"] for s in TOOL_SCHEMAS}
+        tool_names = set(_TOOL_MAP.keys())
+        if schema_names != tool_names:
+            missing = schema_names - tool_names
+            extra = tool_names - schema_names
+            msg = []
+            if missing:
+                msg.append(f"schemas without tools: {missing}")
+            if extra:
+                msg.append(f"tools without schemas: {extra}")
+            raise ValueError(f"Tool/schema mismatch: {'; '.join(msg)}")
+
         if allowed_tools is not None:
             self._tools = {
                 name: _TOOL_MAP[name] for name in allowed_tools if name in _TOOL_MAP

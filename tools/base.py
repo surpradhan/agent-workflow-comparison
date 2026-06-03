@@ -21,6 +21,10 @@ class BaseTool(ABC):
     description: str
 
     @abstractmethod
-    async def execute(self, **kwargs: Any) -> ToolResult:
-        """Execute the tool with the given parameters."""
+    async def execute(self, *args: Any, **kwargs: Any) -> ToolResult:
+        """Execute the tool with the given parameters.
+
+        Subclasses may add explicit parameters before **kwargs for type safety.
+        E.g.: async def execute(self, query: str, **kwargs: Any) -> ToolResult
+        """
         ...

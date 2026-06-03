@@ -45,8 +45,8 @@ def plot_all(
     import matplotlib
     if not show:
         matplotlib.use("Agg")  # headless mode
-    import matplotlib.pyplot as plt
     import matplotlib.cm as cm
+    import matplotlib.pyplot as plt
 
     output_dir.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
@@ -233,8 +233,8 @@ def plot_from_raw(
     import matplotlib
     if not show:
         matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
     import matplotlib.cm as cm
+    import matplotlib.pyplot as plt
 
     output_dir.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []

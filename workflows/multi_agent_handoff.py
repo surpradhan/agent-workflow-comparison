@@ -169,7 +169,8 @@ class MultiAgentHandoffWorkflow(BaseWorkflow):
         self, task_description: str
     ) -> tuple[str, list[str], int, int, int, int]:
         """Run the researcher agent.  Returns (output, tools_used, total_calls, successful_calls, tokens, retries)."""
-        from langchain_core.messages import AIMessage, ToolMessage
+        from langchain_core.messages import ToolMessage
+
         from agents.llm_client import extract_text
 
         messages = [
