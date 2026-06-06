@@ -147,3 +147,7 @@ All workflows share the same base classes:
 - `agents/llm_client.py` — `LLMClient` (provider-agnostic, retry/timeout handling)
 - `tasks/task_registry.py` — `Task`, `TaskLevel`, `TaskRegistry`
 - `evaluation/metrics.py` — `WorkflowMetrics`
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Surabhi Pradhan.
