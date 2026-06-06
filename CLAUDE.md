@@ -18,7 +18,7 @@ cp .env.example .env  # then fill in API keys
 python -m scripts.cli run                        # all workflows, all tasks
 python -m scripts.cli run --workflow chain        # single workflow
 python -m scripts.cli run --level 2               # tasks at a specific level
-python -m scripts.cli run --task-id T001          # single task
+python -m scripts.cli run --task-id L1_T01         # single task
 python -m scripts.cli list-workflows              # show available workflows
 python -m scripts.cli list-tasks                  # show registered tasks
 
